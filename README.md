@@ -15,18 +15,25 @@ This repository provides an automated workflow for setting up and running **LLM 
 ```
 aws-ml-training-automation/
 │── README.md  # Overview & setup instructions
-│── iam_setup.md  # IAM role request guide
+│
+│── docs/
+│   ├── iam_setup.md  # IAM role request guide
+│   ├── config_setup.md  # config.yaml setup guide
+│
 │── config.yaml  # User config for EC2, S3, model settings
+│
 │── setup/
 │   ├── launch_ec2.sh  # Launches EC2 Spot Instance
 │   ├── ssh_connect.sh  # Auto-SSH into EC2
 │   ├── instance_status.sh  # Check EC2 status
 │   ├── terminate_ec2.sh  # Stops EC2 after training
+│
 │── training/
 │   ├── fetch_data.sh  # Downloads dataset from S3
 │   ├── train_model.sh  # Starts model training
 │   ├── save_checkpoint.sh  # Saves model checkpoint to S3
 │   ├── resume_training.sh  # Resumes from latest checkpoint
+│
 │── scripts/
 │   ├── deploy_training.sh  # Main automation script (calls everything)
 │   ├── config.yaml.example  # Example user config file

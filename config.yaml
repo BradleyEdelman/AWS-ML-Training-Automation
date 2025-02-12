@@ -1,0 +1,15 @@
+aws:
+  iam_role_arn: "arn:aws:iam::123456789012:role/EC2-Training-Role"  # Replace with your IAM Role ARN
+  region: "us-east-1"  # Change to your AWS region
+  s3_bucket: "your-bucket-name"  # Replace with your assigned S3 bucket
+
+ec2:
+  instance_type: "g4dn.xlarge"  # Default instance type for training
+  volume_size: 100  # EBS volume size in GB
+  use_spot_instance: true  # Set to false for On-Demand instances
+
+training:
+  model: "gpt2"  # Default model
+  epochs: 50  # Number of training epochs
+  checkpoint_interval: 5  # Save checkpoint every X epochs
+  resume_from_checkpoint: true  # Set to false to start fresh training
