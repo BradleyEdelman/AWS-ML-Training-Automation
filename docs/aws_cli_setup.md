@@ -1,41 +1,10 @@
-# IAM Role Setup Guide
+# AWS CLI  Setup Guide
 
-This guide provides step-by-step instructions to request and configure IAM permissions that are needed for AWS EC2 ML training automation. Since most users do not have root access, they must request IAM permissions from their AWS administrator.
-
----
-
-## 1️. Request Required IAM Permissions
-
-To enable the scripts to interact with AWS services (EC2, S3, and logging), users should request the following IAM permissions from their administrator:
-
-### **IAM Role Name:** `EC2-Training-Role`
-
-### **Required AWS Managed Policies:**
-- **`AmazonS3FullAccess`** → Required for saving/loading training checkpoints.
-- **`CloudWatchLogsFullAccess`** → Required for logging training progress.
-- **`AmazonEC2FullAccess`** → Required for managing EC2 instances.
-
-### **Request Access & Secret Key**  
-Users must also request:  
-- **AWS Access Key ID**  
-- **AWS Secret Access Key**  
-
-💡 **These credentials are required to configure AWS CLI.**  
-⚠️ **Store them securely and do not share them publicly.**  
-
-### **Obtain IAM Role ARN**
-
-Once the AWS admin creates the IAM role, they will provide you with an IAM Role ARN (Amazon Resource Name), which you must insert into the **config.yaml** file (LATER.MD)
-
-Example IAM ARN: `arn:aws:iam::123456789012:role/EC2-Training-Role`
-
-### **Request S3 Bucket name** 
-
-Example S3 Bucket: `s3://your-bucket-name/`
+This guide provides step-by-step instructions set up the AWS command line interface (CLI) for uploading data, requesting EC2 spot instances, and running jobs.
 
 ---
 
-## 3️. Install AWS Command Line Interface (CLI)  
+## 1. Install AWS Command Line Interface (CLI)  
 
 AWS CLI is required to test IAM role functionality and interact with AWS services.  
 
@@ -61,7 +30,7 @@ aws --version
 
 ---
 
-## 4. Configure AWS CLI
+## 2. Configure AWS CLI
 
 Once installed, configure AWS CLI using your Access Key & Secret Key:
 
@@ -83,7 +52,7 @@ aws configure list
 
 ---
 
-## 5. Verify IAM Role is Active
+## 3. Verify IAM Role is Active
 
 After receiving the IAM Role, verify that it exists and has the correct policies attached:
 
@@ -95,7 +64,7 @@ This should return details about the role, including its ARN and attached polici
 
 ---
 
-## 6. Manually Attach IAM Role to EC2 Instances
+## 4. Manually Attach IAM Role to EC2 Instances
 
 Since you do not have root access, you must manually attach the IAM role when launching an EC2 instance via AWS Console or CLI.
 
@@ -113,7 +82,7 @@ aws ec2 run-instances \
 
 ---
 
-## 7. Upload Data to S3 Using AWS CLI
+## 5. Upload Data to S3 Using AWS CLI
 
 Once you receive the S3 bucket name, upload your training data to it using AWS CLI. Using the CLI is required for files/folders larger than 5GB.
 
@@ -137,7 +106,7 @@ aws s3 ls s3://your-bucket-name/path/in-bucket/
 
 ---
 
-## 8. Test IAM Role Functionality
+## 6. Test IAM Role Functionality
 
 Once your EC2 instance is running with the attached IAM role, confirm that it can access AWS services:
 
