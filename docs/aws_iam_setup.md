@@ -1,57 +1,68 @@
 # AWS IAM Role Setup Guide
 
-This guide provides step-by-step instructions to request and configure IAM permissions that are needed for AWS EC2 ML training automation. Since most users do not have root access, they must request IAM permissions from their AWS administrator.
+This guide provides step-by-step instructions to obtain the IAM access required to run the automated ML scripts. Since most users do not have root access, they must request IAM permissions from their AWS administrator. These items can be found in **Option 1** below. Individuals with root access can also create a new IAM role/user themselves, as described in **Option 2**.
 
 ---
 
-## 1️. Request Required IAM Permissions
+## Option 1: No AWS Root Access 
 
-To enable the scripts to interact with AWS services (EC2, S3, and logging), users should request the following IAM permissions from their administrator:
-
-### **IAM Role Name:** `EC2-Training-Role`
+### Request an **IAM role**: e.g. `EC2-Training-Role`
 
 ### **Required AWS Managed Policies:**
-- **`AmazonS3FullAccess`** → Required for saving/loading training checkpoints.
-- **`CloudWatchLogsFullAccess`** → Required for logging training progress.
-- **`AmazonEC2FullAccess`** → Required for managing EC2 instances.
+- S3 (`your-bucket-name`)
+    - **s3:GetObject**
+    - **s3:PutObject**
+    - **s3:ListBucket**
+- EC2
+    - **ec2:DescribeInstances**
+    - **ec2:StartInstances**
+    - **ec2:StopInstances**
+    - **ec2:TerminateInstances**
+    - **ec2:RequestSpotInstances**
+    - **ec2:CancelSpotInstanceRequest**
+- CloudWatchLogs
+    - **CreateLogStream**
+    - **PutLogEvents**
 
-### **Request Access & Secret Key**
+Once the AWS admin creates the IAM role, they will provide you with an IAM Role ARN (Amazon Resource Name), which you must insert into the **config.yaml** file
+
+Example IAM ARN: `arn:aws:iam::YOUR_ACCOUNT_ID:role/EC2-Training-Role`
+
+### **Access & Secret Key**
 Users must also request:  
 - **AWS Access Key ID**
 - **AWS Secret Access Key**
 
-💡 **These credentials are required to configure AWS CLI.**
-⚠️ **Store them securely and do not share them publicly.**
-
-### **Obtain IAM Role ARN**
-
-Once the AWS admin creates the IAM role, they will provide you with an IAM Role ARN (Amazon Resource Name), which you must insert into the **config.yaml** file (LATER.MD)
-
-Example IAM ARN: `arn:aws:iam::123456789012:role/EC2-Training-Role`
-
-### **Request S3 Bucket name** 
-
+### **S3 Bucket name** 
+Users will also need a dedicated S3 bucket:
 Example S3 Bucket: `s3://your-bucket-name/`
 
 ---
 
+## Option 2: AWS Root Access (via AWS dashboard)
 
-This guide walks through **creating an IAM Role**, **attaching it to an IAM User**, and **configuring AWS CLI** for ML training automation.
+## **Step 1: Create an S3 bucket**
+1. Open the **AWS Console** and navigate to **S3**.
+2. Click on "Create bucket"
+3. Name the bucket **`EC2-Training-Bucket`**, and then click "Create bucket" at the bottom of the page.
+   
+## **Step 2: Create an IAM role**
+1. Navigate to the **IAM Dashboard**.
+2. Click on **Roles** in the lefthand menu.
+3. Click **Create Role**.
+4. For **Select Trusted Entity Type** choose **AWS Service**.
+5. FOr **Use Case** select **EC2** from the dropdown menu and click "next".
 
----
+6. Do not add any permissions, and click "next".
 
-## **1️⃣ Create an IAM Role for EC2 Training**
-To allow AWS services (EC2) and users to interact with AWS resources (S3, CloudWatch, etc.), we need an **IAM Role**.
+7. Name the role `EC2-Training-Role`, do not modify the trust policy and click "create role"
 
-### **Step 1: Go to IAM Roles**
-1. Open the **AWS Console** → Navigate to **IAM → Roles**.
-2. Click **Create Role**.
-3. **Select Trusted Entity Type** → Choose **AWS Service**.
-4. **Choose a Use Case** → Select **EC2** → Click **Next**.
-
-### **Step 2: Attach a Custom Policy**
-1. Click **"Create Policy"** and switch to the **JSON tab**.
-2. Copy and paste the following **restricted IAM policy**:
+### **Step 3: Attach a Custom Permission Policy to IAM role**
+1. Navigate back to **Roles** in the **IAM Dashboard**.
+2. Click on  **`EC2-Training-Role`**
+3. Under the **Permissions** tab, click on **Add permissions** and select **Create inline polic**
+4. In the Policy editor click on **"JSON"** an replace the existing text with the restricted IAM policy below (be sure to replace "your-bucket-name", "region", and "account-id" with your own). Click "next".
+5. Enter **"EC2-Training-Policy"** for the Policy name and click "Create policy"
 
 ```json
 {
@@ -94,22 +105,26 @@ To allow AWS services (EC2) and users to interact with AWS resources (S3, CloudW
         }
     ]
 }
+```
 
+## **Step 4: Create an IAM User**
+1. Navigate to the **IAM Dashboard**.
+2. Click on **Users** in the lefthand menu.
+3. Click **Create User**.
+4. Enter **`EC2-Training-User`** in User name, and click "next".
+5. If desired, add this User to a User group. Otherwise, click "next".
+6. Click "Create user".
+7. Click on `EC2-Training-User` and copy the ARN in the Summary box
 
-3. Click Next, name the policy (EC2TrainingPolicy), and click Create Policy.
-4. Go back to IAM Role Creation → Attach EC2TrainingPolicy.
-5. Click Next → Name the Role (EC2-Training-Role) → Create Role.
+Example IAM ARN: `arn:aws:iam::YOUR_ACCOUNT_ID:role/EC2-Training-Role`
 
+## **Step 5: Modify the IAM Role Trust Policy**
+Allow a specific IAM User to assume this role.
 
-2️⃣ Modify the IAM Role Trust Policy
-Now, allow a specific IAM User to assume this role.
-
-Step 1: Edit the Trust Policy
-Go to IAM → Roles → Click EC2-Training-Role.
-
-Click "Trust relationships" → "Edit trust policy".
-
-Replace with:
+1. Navigate back to **Roles** in the **IAM Dashboard** and click on the **`EC2-Training-Role`**.
+2. Click on the **"Trust relationships"** tab and then **"Edit trust policy"**
+3. Replace the existing text with the trust policy below (be sure to replace "YOUR_ACCOUNT_ID" with you own). Click "Update policy"
+   
 ```json
 {
     "Version": "2012-10-17",
@@ -130,4 +145,11 @@ Replace with:
         }
     ]
 }
-4. Click "Update Policy".
+```
+
+## **Step 6: Create access key for IAM User**
+1. Navigate back to **Users** in the **IAM Dashboard** and click on the **`EC2-Training-User`**.
+2. On the right side of the Summary box, click **"Create access key"**.
+3. For User case select **"Command Line Interface (CLI)"**, check the confirmation box at the bottom of the page, and click "next".
+4. Enter **`EC2-Training-Key`** in the Description tag value box and click "Create access key"
+5. Click the "Download .csv file" at the bottom of the page to save the access and secret key, and then click "done"
