@@ -4,57 +4,85 @@ This guide provides step-by-step instructions set up the AWS command line interf
 
 ---
 
-## 1. Install AWS Command Line Interface (CLI)  
+## **Step 1. Install AWS Command Line Interface (CLI)**
 
 AWS CLI is required to test IAM role functionality and interact with AWS services.  
 
 ### **Install AWS CLI**  
+1. Follow the instructions for the [AWS CLI Windows Installer](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) depending on your OS.
 
-#### **For macOS & Linux**  
+2. Verify installation
+   
 ```bash
-curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
-sudo installer -pkg AWSCLIV2.pkg -target /
-# Verify installation
-aws --version
-```
-
-#### **For Windows**  
-1. Download the [AWS CLI Windows Installer](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
-2. Run the installer and follow the on-screen instructions.
-3. Verify installation in Command Prompt:
-
-```bash
-# Verify installation
 aws --version
 ```
 
 ---
 
-## 2. Configure AWS CLI
+## **Step 2. Configure AWS CLI**
 
-Once installed, configure AWS CLI using your Access Key & Secret Key:
+Once installed, configure AWS CLI using your **IAM User Access Key & Secret Key**:
 
 ```bash
-aws --configure
+aws configure --profile ec2-training
 ```
 
 It will prompt for:
 
-- AWS Access Key ID → Enter the key provided by your AWS admin.
-- AWS Secret Access Key → Enter the secret key.
-- Default AWS Region → Use your **assigned AWS region** (e.g., `us-east-1`).
-- Output format → Enter `json` (recommended).
+- AWS Access Key ID - Enter the key provided by your AWS admin.
+- AWS Secret Access Key - Enter the secret key.
+- Default AWS Region - Use your **assigned AWS region** (e.g., `eu-central-1`).
+- Output format - Enter `json` (recommended).
 
+After running the following command, you should  see the `ec2-training` profile listed:
 ```bash
-# Verify configuration
-aws configure list
+aws configure list-profiles
+```
+
+Similarly, running the below code should print out the details that you previously entered:
+```bash
+aws configure list --profile ec2-training
 ```
 
 ---
 
-## 3. Verify IAM Role is Active
+## **Step 3. Assume the IAM role**
 
-After receiving the IAM Role, verify that it exists and has the correct policies attached:
+1. Since the IAM user does not have direct permissions, it must assume the role.
+
+###
+```bash
+aws sts assume-role --role-arn "arn:aws:iam::YOUR_ACCOUNT_ID:role/EC2-Training-Role" --role-session-name "EC2TrainingSession" --profile ec2-training
+```
+
+If successful, it should print an output similar to that below:
+
+```json
+{
+    "Credentials": {
+        "AccessKeyId": "TEMP_ACCESS_KEY",
+        "SecretAccessKey": "TEMP_SECRET_KEY",
+        "SessionToken": "TEMP_SESSION_TOKEN"
+    },
+    "AssumedRoleUser": {
+        "Arn": "arn:aws:sts::YOUR_ACCOUNT_ID:assumed-role/EC2-Training-Role/EC2TrainingSession"
+    }
+}
+```
+
+2. Set temporary credentials
+
+Since the credentials are temporary, set them before running AWS CLI commands:
+
+```bash
+set AWS_ACCESS_KEY_ID=TEMP_ACCESS_KEY
+set AWS_SECRET_ACCESS_KEY=TEMP_SECRET_KEY
+set AWS_SESSION_TOKEN=TEMP_SESSION_TOKEN
+```
+
+
+
+
 
 ```bash
 aws iam get-role --role-name EC2-Training-Role
