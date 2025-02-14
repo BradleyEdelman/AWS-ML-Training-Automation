@@ -20,22 +20,26 @@ This guide provides step-by-step instructions to obtain the IAM access required 
     - **ec2:TerminateInstances**
     - **ec2:RequestSpotInstances**
     - **ec2:CancelSpotInstanceRequest**
-- CloudWatchLogs
+- CloudWatchLogs (`/aws/ec2/training-logs`)
+    - **DescribeLogGroups**
+    - **DescribeLogStreams**
+    - **GetLogEvents**
     - **CreateLogStream**
     - **PutLogEvents**
 
-Once the AWS admin creates the IAM role, they will provide you with an IAM Role ARN (Amazon Resource Name), which you must insert into the **config.yaml** file
+### Once the AWS admin creates the IAM role, they will provide you with the following:
 
-Example IAM ARN: `arn:aws:iam::YOUR_ACCOUNT_ID:role/EC2-Training-Role`
+**IAM Role ARN (Amazon Resource Name)**, which you must insert into the **config.yaml** file**
+Example IAM ARN: `arn:aws:iam::account-id:role/EC2-Training-Role`
 
-### **Access & Secret Key**
-Users must also request:  
-- **AWS Access Key ID**
-- **AWS Secret Access Key**
-
-### **S3 Bucket name** 
-Users will also need a dedicated S3 bucket:
+**S3 Bucket name** 
 Example S3 Bucket: `s3://your-bucket-name/`
+
+**CloudWatch Log Group**
+Example Log Group: `/aws/ec2/training-logs`
+
+**AWS Access Key ID**
+**AWS Secret Access Key**
 
 ---
 
@@ -45,19 +49,23 @@ Example S3 Bucket: `s3://your-bucket-name/`
 1. Open the **AWS Console** and navigate to **S3**.
 2. Click on "Create bucket"
 3. Name the bucket **`EC2-Training-Bucket`**, and then click "Create bucket" at the bottom of the page.
+
+## **Step 2: Create a CloudWatch Log & Group**
+1. Navigate to **CloudWatch**
+2. Click on **Log groups** under **Logs** in the lefthand menu
+3. Click **Create Log Group**
+4. Enter **`/aws/ec2/training-logs`** in the Log group name and click "create" 
    
-## **Step 2: Create an IAM role**
+## **Step 3: Create an IAM role**
 1. Navigate to the **IAM Dashboard**.
 2. Click on **Roles** in the lefthand menu.
 3. Click **Create Role**.
 4. For **Select Trusted Entity Type** choose **AWS Service**.
-5. FOr **Use Case** select **EC2** from the dropdown menu and click "next".
-
+5. For **Use Case** select **EC2** from the dropdown menu and click "next".
 6. Do not add any permissions, and click "next".
-
 7. Name the role `EC2-Training-Role`, do not modify the trust policy and click "create role"
 
-### **Step 3: Attach a Custom Permission Policy to IAM role**
+### **Step 4: Attach a Custom Permission Policy to IAM role**
 1. Navigate back to **Roles** in the **IAM Dashboard**.
 2. Click on  **`EC2-Training-Role`**
 3. Under the **Permissions** tab, click on **Add permissions** and select **Create inline polic**
@@ -95,19 +103,32 @@ Example S3 Bucket: `s3://your-bucket-name/`
             "Resource": "*"
         },
         {
-            "Sid": "CloudWatchLoggingLimited",
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:region:account-id:log-group:/aws/ec2/training-logs"
-        }
+			"Sid": "CloudWatchLoggingLimited",
+			"Effect": "Allow",
+			"Action": [
+				"logs:DescribeLogGroups"
+			],
+			"Resource": "*"
+		},
+        {
+			"Sid": "RestrictedLogGroupAccess",
+			"Effect": "Allow",
+			"Action": [
+				"logs:DescribeLogStreams",
+				"logs:GetLogEvents",
+				"logs:CreateLogStream",
+				"logs:PutLogEvents"
+			],
+			"Resource": [
+				"arn:aws:logs:region:account-id:log-group:/aws/ec2/training-logs",
+				"arn:aws:logs:region:account-id:log-group:/aws/ec2/training-logs:*"
+			]
+		}
     ]
 }
 ```
 
-## **Step 4: Create an IAM User**
+## **Step 5: Create an IAM User**
 1. Navigate to the **IAM Dashboard**.
 2. Click on **Users** in the lefthand menu.
 3. Click **Create User**.
@@ -116,14 +137,14 @@ Example S3 Bucket: `s3://your-bucket-name/`
 6. Click "Create user".
 7. Click on `EC2-Training-User` and copy the ARN in the Summary box
 
-Example IAM ARN: `arn:aws:iam::YOUR_ACCOUNT_ID:role/EC2-Training-Role`
+Example IAM ARN: `arn:aws:iam::account-id:role/EC2-Training-Role`
 
-## **Step 5: Modify the IAM Role Trust Policy**
+## **Step 6: Modify the IAM Role Trust Policy**
 Allow a specific IAM User to assume this role.
 
 1. Navigate back to **Roles** in the **IAM Dashboard** and click on the **`EC2-Training-Role`**.
 2. Click on the **"Trust relationships"** tab and then **"Edit trust policy"**
-3. Replace the existing text with the trust policy below (be sure to replace "YOUR_ACCOUNT_ID" with you own). Click "Update policy"
+3. Replace the existing text with the trust policy below (be sure to replace "account-id" with you own). Click "Update policy"
    
 ```json
 {
@@ -132,7 +153,7 @@ Allow a specific IAM User to assume this role.
         {
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::YOUR_ACCOUNT_ID:user/EC2-Training-User"
+                "AWS": "arn:aws:iam::account-id:user/EC2-Training-User"
             },
             "Action": "sts:AssumeRole"
         },
@@ -147,7 +168,7 @@ Allow a specific IAM User to assume this role.
 }
 ```
 
-## **Step 6: Create access key for IAM User**
+## **Step 7: Create access key for IAM User**
 1. Navigate back to **Users** in the **IAM Dashboard** and click on the **`EC2-Training-User`**.
 2. On the right side of the Summary box, click **"Create access key"**.
 3. For User case select **"Command Line Interface (CLI)"**, check the confirmation box at the bottom of the page, and click "next".

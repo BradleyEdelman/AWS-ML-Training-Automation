@@ -1,0 +1,18 @@
+# Production dependencies
+-r requirements.txt
+
+# Linting & Formatting
+black
+black[jupyter]
+ruff
+mypy
+
+# Pre-commit hooks
+pre-commit
+
+# Testing
+pytest
+pytest-cov
+pytest-mock
+boto3-stubs[s3,ec2,logs] # AWS hints
+moto[boto3]  # Mock AWS services?

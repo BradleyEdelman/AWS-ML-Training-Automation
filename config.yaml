@@ -1,5 +1,5 @@
 aws:
-  iam_role_arn: "arn:aws:iam::123456789012:role/EC2-Training-Role"  # Replace with your IAM Role ARN
+  iam_role_arn: "arn:aws:iam::account-id:role/EC2-Training-Role"  # Replace with your IAM Role ARN
   region: "us-east-1"  # Change to your AWS region
   s3_bucket: "your-bucket-name"  # Replace with your assigned S3 bucket
 

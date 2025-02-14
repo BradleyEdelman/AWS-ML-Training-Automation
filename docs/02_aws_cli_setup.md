@@ -1,4 +1,4 @@
-# AWS CLI  Setup Guide
+# AWS CLI Setup Guide
 
 This guide provides step-by-step instructions set up the AWS command line interface (CLI) for uploading data, requesting EC2 spot instances, and running jobs.
 
@@ -80,18 +80,52 @@ set AWS_SECRET_ACCESS_KEY=TEMP_SECRET_KEY
 set AWS_SESSION_TOKEN=TEMP_SESSION_TOKEN
 ```
 
+3. Verify access to S3, EC2, and Cloudwatch 
 
-
-
-
+- Check S3 Access
 ```bash
-aws iam get-role --role-name EC2-Training-Role
+aws s3 ls s3://your-bucket-name
 ```
 
-This should return details about the role, including its ARN and attached policies.
+This should return the contents of your bucket, or nothing if it is empty
 
----
+- Check EC2 Access
+```bash
+aws ec2 describe-instances
+```
 
+This should return the following if no instances have been connected to your account:
+```json
+{
+    "Reservations": []
+}
+```
+
+- Check CloudWatch 
+```bash
+aws logs describe-log-groups
+```
+
+This should return a list of all log groups, similar to that below:
+```json
+{
+    "logGroups": [
+        {
+            "logGroupName": "/aws/ec2/training-logs",
+            "creationTime": 1739460770769,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:region:account-id:log-group:/aws/ec2/training-logs:*",
+            "storedBytes": 0,
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:region:account-id:log-group:/aws/ec2/training-logs"
+        }
+
+```
+
+If you see these outputs, your temporary credentials are working and you can proceed to uploading data to your s3 bucket and requesting resources for ML training.
+
+
+<!-- 
 ## 4. Manually Attach IAM Role to EC2 Instances
 
 Since you do not have root access, you must manually attach the IAM role when launching an EC2 instance via AWS Console or CLI.
@@ -108,58 +142,7 @@ aws ec2 run-instances \
     --iam-instance-profile Name=EC2-Training-Role
 ```
 
----
+--- -->
 
-## 5. Upload Data to S3 Using AWS CLI
-
-Once you receive the S3 bucket name, upload your training data to it using AWS CLI. Using the CLI is required for files/folders larger than 5GB.
-
-- Upload a single file
-
-```bash
-aws s3 cp /path/to/local-file s3://your-bucket-name/path/in-bucket/
-```
-
-- Upload an entire directory
-
-```bash
-aws s3 cp /path/to/local-folder s3://your-bucket-name/path/in-bucket/ --recursive
-```
-
-- Verify S3 Upload Was Successful
-
-```bash
-aws s3 ls s3://your-bucket-name/path/in-bucket/
-```
-
----
-
-## 6. Test IAM Role Functionality
-
-Once your EC2 instance is running with the attached IAM role, confirm that it can access AWS services:
-
-- Check S3 Access
-
-```bash
-aws s3 ls s3://your-bucket-name
-```
-
-If this command returns a list of files, your permissions are correctly set up.
-
-- Check EC2 Access
-
-```bash
-aws ec2 describe-instances --query 'Reservations[*].Instances[*].[InstanceId, PublicIpAddress]'
-```
-
-This should return details of running EC2 instances.
-
----
-
-📌 Next Steps
-
-Modify config.yaml to include the correct IAM Role ARN.
-
-Proceed with running deploy_training.sh to launch an EC2 training instance.
 
 

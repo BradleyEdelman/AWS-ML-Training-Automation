@@ -1,3 +1,9 @@
+# Extra files
+README_yes.md
+
+# All venv
+venv*/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

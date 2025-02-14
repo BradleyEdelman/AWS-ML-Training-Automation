@@ -1,0 +1,27 @@
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310']
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | build
+  | dist
+  | __pycache__
+  | .*_test\.py
+)/
+'''
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+select = ["E", "F", "W", "I"]  # Linting rules (Errors, Flake8, Warnings, Imports)
+ignore = ["E203", "E501"]  # Ignore line spacing & long lines
+fixable = ["I"]  # Allow Ruff to auto-fix import sorting
+
+[tool.mypy]
+ignore_missing_imports = true  # Ignore missing type hints in third-party packages
+disallow_untyped_defs = true  # Enforce function type hints
+strict_optional = true  # Catch None-related issues
+warn_unused_ignores = true
+warn_return_any = true

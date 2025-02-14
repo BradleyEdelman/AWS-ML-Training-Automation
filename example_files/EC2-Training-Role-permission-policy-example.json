@@ -28,13 +28,26 @@
             "Resource": "*"
         },
         {
-            "Sid": "CloudWatchLoggingLimited",
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:region:account-id:log-group:/aws/ec2/training-logs"
-        }
+			"Sid": "CloudWatchLoggingLimited",
+			"Effect": "Allow",
+			"Action": [
+				"logs:DescribeLogGroups"
+			],
+			"Resource": "*"
+		},
+        {
+			"Sid": "RestrictedLogGroupAccess",
+			"Effect": "Allow",
+			"Action": [
+				"logs:DescribeLogStreams",
+				"logs:GetLogEvents",
+				"logs:CreateLogStream",
+				"logs:PutLogEvents"
+			],
+			"Resource": [
+				"arn:aws:logs:region:account-id:log-group:/aws/ec2/training-logs",
+				"arn:aws:logs:region:account-id:log-group:/aws/ec2/training-logs:*"
+			]
+		}
     ]
 }
