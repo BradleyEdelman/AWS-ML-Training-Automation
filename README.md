@@ -1,5 +1,4 @@
 # AWS ML Training Automation
-**v1.0.0**
 
 This repository provides an automated workflow for setting up and running **deep learning training on AWS EC2** with minimal manual effort. The goal is to allow users to easily launch, configure, and manage ML training instances while being mindful of modern trainin priorities like checkpointing and cost optimization.
 
@@ -76,9 +75,7 @@ Modify [`config.yaml`](config.yaml) with your AWS credentials, instance type, mo
 ### 4. Training workflow
 Use the following scripts, as needed, to launch an EC2 instance, start training, and handle interruptions:
 
-## **🔹 Workflow Overview**
-
-## **🔹 Workflow Overview**
+## **Workflow Overview**
 
 | **Step** | **Script** | **Purpose** |
 |----------|-----------|-------------|
