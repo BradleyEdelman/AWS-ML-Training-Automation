@@ -1,15 +1,18 @@
 aws:
-  iam_role_arn: "arn:aws:iam::account-id:role/EC2-Training-Role"  # Replace with your IAM Role ARN
-  region: "us-east-1"  # Change to your AWS region
-  s3_bucket: "your-bucket-name"  # Replace with your assigned S3 bucket
+  iam_role_arn: "arn:aws:iam::084375547262:role/EC2-Training-Role" # Do we need this anymore?
+  iam_instance_profile: "EC2-Training-Role"
+  region: "eu-central-1"
+  s3_bucket: "grateful-dead-chatbot"
+  key_pair_name: "EC2-Training-Key"
 
 ec2:
-  instance_type: "g4dn.xlarge"  # Default instance type for training
-  volume_size: 100  # EBS volume size in GB
-  use_spot_instance: true  # Set to false for On-Demand instances
+  ami_id: "ami-0745b7d4092315796"  # Deep Learning AMI Example
+  instance_type: "t3.large"
+  volume_size: 100  # EBS volume size
+  use_spot_instance: true  # Or On-Demand instances
 
 training:
-  model: "gpt2"  # Default model
-  epochs: 50  # Number of training epochs
-  checkpoint_interval: 5  # Save checkpoint every X epochs
-  resume_from_checkpoint: true  # Set to false to start fresh training
+  model: "gpt2" 
+  epochs: 50 
+  checkpoint_interval: 5
+  resume_from_checkpoint: true
