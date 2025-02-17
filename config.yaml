@@ -1,13 +1,15 @@
 aws:
-  iam_role_arn: "arn:aws:iam::084375547262:role/EC2-Training-Role" # Do we need this anymore?
+  cli_profile: "ec2-training"
+  iam_role_arn: "arn:aws:iam::084375547262:role/EC2-Training-Role"
   iam_instance_profile: "EC2-Training-Role"
   region: "eu-central-1"
   s3_bucket: "grateful-dead-chatbot"
-  key_pair_name: "EC2-Training-Key"
+  session_name: "EC2-Training-Session"
 
 ec2:
   ami_id: "ami-0745b7d4092315796"  # Deep Learning AMI Example
   instance_type: "t3.large"
+  key_pair_name: "EC2-Training-Key"
   volume_size: 100  # EBS volume size
   use_spot_instance: true  # Or On-Demand instances
 

@@ -4,7 +4,7 @@
         {
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::account-id:user/EC2-Training-User"
+                "AWS": "arn:aws:iam::YOUR_ACCOUNT_ID:user/EC2-Training-User"
             },
             "Action": "sts:AssumeRole"
         },

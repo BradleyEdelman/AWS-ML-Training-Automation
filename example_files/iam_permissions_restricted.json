@@ -10,8 +10,8 @@
                 "s3:ListBucket"
             ],
             "Resource": [
-                "arn:aws:s3:::grateful-dead-chatbot",
-                "arn:aws:s3:::grateful-dead-chatbot/*"
+                "arn:aws:s3:::your-bucket-name",
+                "arn:aws:s3:::your-bucket-name/*"
             ]
         },
         {
@@ -33,7 +33,7 @@
             "Sid": "IAMPassRole",
             "Effect": "Allow",
             "Action": "iam:PassRole",
-            "Resource": "arn:aws:iam::084375547262:role/EC2-Training-Role"
+            "Resource": "arn:aws:iam::account-id:role/EC2-Training-Role"
         },
         {
             "Sid": "CloudWatchLoggingLimited",
@@ -53,9 +53,37 @@
                 "logs:PutLogEvents"
             ],
             "Resource": [
-                "arn:aws:logs:eu-central-1:084375547262:log-group:/aws/ec2/training-logs",
-                "arn:aws:logs:eu-central-1:084375547262:log-group:/aws/ec2/training-logs:*"
+                "arn:aws:logs:region:account-id:log-group:/aws/ec2/training-logs",
+                "arn:aws:logs:region:account-id:log-group:/aws/ec2/training-logs:*"
             ]
+        },
+        {
+            "Sid": "KeyPairManagement",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateKeyPair",
+                "ec2:DescribeKeyPairs",
+                "ec2:DeleteKeyPair"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "EC2SecurityGroupAccess",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeSecurityGroups",
+                "ec2:AuthorizeSecurityGroupIngress"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "ModifySecurityGroup",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeSecurityGroups",
+                "ec2:AuthorizeSecurityGroupIngress"
+            ],
+            "Resource": "*"
         }
     ]
 }

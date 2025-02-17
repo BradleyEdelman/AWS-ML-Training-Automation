@@ -1,0 +1,4 @@
+jq
+yq
+awscli
+git
