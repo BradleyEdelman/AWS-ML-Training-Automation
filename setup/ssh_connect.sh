@@ -4,11 +4,6 @@
 CONFIG_FILE="config.yaml"
 REGION=$(yq e '.aws.region' $CONFIG_FILE)
 
-# Retrieve instance ID
-if [[ ! -f "setup/instance_id.txt" ]]; then
-    echo "Error: instance_id.txt not found. Did you launch an EC2 instance?"
-    exit 1
-fi
 INSTANCE_ID=$(cat setup/instance_id.txt)
 
 # Get the public IP of the instance
@@ -17,11 +12,6 @@ PUBLIC_IP=$(aws ec2 describe-instances \
     --region $REGION \
     --query 'Reservations[0].Instances[0].PublicIpAddress' \
     --output text)
-
-if [[ "$PUBLIC_IP" == "None" ]]; then
-    echo "Error: No public IP found. Ensure the instance is running."
-    exit 1
-fi
 
 # Get the security group ID
 SECURITY_GROUP_ID=$(aws ec2 describe-instances \

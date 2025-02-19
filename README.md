@@ -42,15 +42,14 @@ aws-ml-training-automation/
 │   ├── launch_spot_instance.sh                 # Requests a Spot Instance (and enable SSH)
 │   ├── ssh_connect.sh                          # SSH into EC2 instance
 │   ├── terminate_ec2.sh                        # Terminates EC2 instance
-│   ├── detect_spot_termination.sh (TDB?)       # Detects AWS Spot termination
+│   ├── detect_spot_termination.sh              # Detects AWS Spot termination
 │
 │── tests/
 │
 │── training/
-│   ├── fetch_data.sh (TBD)                     # Download dataset from S3
+│   ├── fetch_data.sh                           # Download dataset from S3
 │   ├── train_model.py (TBD)                    # Starts model training
-│   ├── save_checkpoint.py (TBD)                # Saves model checkpoint to S3
-│   ├── resume_training.sh (TBD)                # Resumes training from latest checkpoint
+│   ├── prepare_data.py                         # Prepares data for model input
 │
 │── .gitignore
 │── .pre-commit-config.yaml
@@ -92,9 +91,9 @@ Use the following scripts, as needed, to launch an EC2 instance, start training,
 | **1. Assume IAM role** | [`iam_assume_role.sh`](setup/assume_iam_role.sh) | Assume IAM role with permissions |
 | **1. Launch Spot Instance** | [`launch_spot_instance.sh`](setup/launch_spot_instance.sh) | Requests a new Spot Instance |
 | **2. SSH into Instance** | [`ssh_connect.sh`](setup/ssh_connect.sh) | Automatically SSHs into the instance |
-<!-- | **3. Fetch Data from S3** | [`fetch_data.sh`](training/fetch_data.sh) | Downloads dataset from S3 to the instance |
+| **3. Fetch Data from S3** | [`fetch_data.sh`](training/fetch_data.sh) | Downloads dataset from S3 to the instance |
 | **4. Start Training** | [`train_model.py`](training/train_model.py) | Runs the ML model training |
-| **5. Monitor for Spot Termination** | [`detect_spot_termination.sh`](setup/detect_spot_termination.sh) | Detects AWS termination notice |
+<!-- | **5. Monitor for Spot Termination** | [`detect_spot_termination.sh`](setup/detect_spot_termination.sh) | Detects AWS termination notice |
 | **6. Save Checkpoint Before Shutdown** | [`save_checkpoint.py`](training/save_checkpoint.py) | Saves model checkpoint to S3 before shutdown |
 | **7. Terminate EC2 Instance** | [`terminate_ec2.sh`](setup/terminate_ec2.sh) | Stops EC2 instance when training completes or Spot Instance is terminated |
 | **8. Resume Training from Checkpoint** | [`resume_training.sh`](training/resume_training.sh) | Loads latest checkpoint & resumes training |

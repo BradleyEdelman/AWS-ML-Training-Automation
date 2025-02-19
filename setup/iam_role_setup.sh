@@ -32,4 +32,4 @@ aws iam create-instance-profile --instance-profile-name "$IAM_INSTANCE_PROFILE"
 echo "Adding Role to Instance Profile..."
 aws iam add-role-to-instance-profile --instance-profile-name "$IAM_INSTANCE_PROFILE" --role-name "$IAM_ROLE_NAME"
 
-echo "✅ IAM Role & Profile setup complete!"
+echo "IAM Role & Profile setup complete!"

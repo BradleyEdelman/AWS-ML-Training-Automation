@@ -1,5 +1,7 @@
 # Extra files
 README_yes.md
+training/data*
+training/save*
 
 # All venv
 venv*/

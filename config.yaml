@@ -11,10 +11,13 @@ ec2:
   instance_type: "t3.large"
   key_pair_name: "EC2-Training-Key"
   volume_size: 100  # EBS volume size
-  use_spot_instance: true  # Or On-Demand instances
+  use_spot_instance: true  # fasle for On-Demand instances
 
 training:
+  dataset_path: "data/"
   model: "gpt2" 
   epochs: 50 
   checkpoint_interval: 5
+  checkpoint_dir: "checkpoints/"
+  checkpoint_file: "model_checkpoint.pth" 
   resume_from_checkpoint: true
