@@ -25,13 +25,13 @@ If your bucket is empty, nothing will be returned. Otherwise, you should see a l
 - Upload a single file
 
 ```bash
-aws s3 cp /path/to/local-file s3://your-bucket-name/path/in-bucket/
+aws s3 cp //path//to/local-file s3://your-bucket-name/path/in-bucket/
 ```
 
 - Upload an entire directory
 
 ```bash
-aws s3 cp /path/to/local-folder s3://your-bucket-name/path/in-bucket/ --recursive
+aws s3 cp //path//to//local-folder s3://your-bucket-name/path/in-bucket/ --recursive
 ```
 
 - Verify S3 Upload Was Successful

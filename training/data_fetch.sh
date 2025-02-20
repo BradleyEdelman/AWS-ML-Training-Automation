@@ -22,6 +22,7 @@ if [[ "$RESUME_FROM_CHECKPOINT" == "true" ]]; then
     echo "Checking for saved checkpoint..."
     aws s3 ls "s3://$S3_BUCKET/$CHECKPOINT_FILE" > /dev/null 2>&1
 
+    # or load most recent checkpoint if specified one doesnt exist???
     if [[ $? -eq 0 ]]; then
         echo "Found checkpoint: $CHECKPOINT_FILE. Downloading..."
         aws s3 cp "s3://$S3_BUCKET/$CHECKPOINT_FILE" "$CHECKPOINT_DIR/$CHECKPOINT_FILE"

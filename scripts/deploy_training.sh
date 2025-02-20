@@ -14,18 +14,10 @@ bash setup/ssh_connect.sh
 
 # Fetch Data
 echo "Fetching Dataset..."
-bash training/fetch_data.sh
-
-# Validate Dataset Format
-echo "Checking Data Format..."
-python3 training/data_check_format.py
-
-# Prepare Data for Model
-echo "Preparing Data..."
-python3 training/prepare_data.py
+bash training/data_fetch.sh
 
 # Resume or Start Training
 echo "Starting Training..."
-bash training/start_training.sh
+bash training/train_model.py
 
 # Do more stuff I havent thought of yet
