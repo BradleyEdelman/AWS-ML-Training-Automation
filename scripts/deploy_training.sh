@@ -2,19 +2,19 @@
 
 # Assume IAM Role
 echo "Assuming IAM Role..."
-bash setup/assume_iam_role.sh
+bash runtime/02_assume_iam_role.sh
 
 # Launch Spot Instance
 echo "Launching Spot Instance..."
-bash setup/launch_spot_instance.sh
+bash runtime/03_launch_spot_instance.sh
 
 # Connect to Instance
 echo "Connecting to EC2..."
-bash setup/ssh_connect.sh
+bash runtiem/04_ssh_connect.sh
 
 # Fetch Data
 echo "Fetching Dataset..."
-bash training/data_fetch.sh
+bash runtime/05_data_fetch.sh
 
 # Resume or Start Training
 echo "Starting Training..."

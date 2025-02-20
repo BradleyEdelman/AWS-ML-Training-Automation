@@ -18,42 +18,48 @@ I started this project since I wanted to get more involved in heavily ML models 
 ## 📂 File Structure (Estimated)
 ```
 aws-ml-training-automation/
+│── bootstrap/
+│   ├── 00_install_shell_requirements.sh         # Installed shell requirments using Git Bash
+│   ├── 01_iam_role_setup.sh                     # IAM role setup only using AWS CLI
+│
 │── docs/
-│   ├── 00_aws_cli_installation                 # Guide for installing AWS CLI and Git Bash
-│   ├── 01_aws_iam_setup.md                     # AWS IAM role setup guide
-│   ├── 02_aws_assume_role.md                   # Guide to assuming IAM role using AWS CLI
-│   ├── 03_aws_S3_upload_data.md                # Guide for data upload using AWS CLI
+│   ├── 00_aws_cli_installation.md               # Guide for installing AWS CLI and Git Bash
+│   ├── 01_aws_iam_setup.md                      # AWS IAM role setup guide
+│   ├── 02_aws_assume_role.md                    # Guide to assuming IAM role using AWS CLI
+│   ├── 03_aws_S3_upload_data.md                 # Guide for data upload using AWS CLI
 │
 │── example_files/
-│   ├── iam_permissions_full.json               # Full IAM role permissions (e.g. root user)
-│   ├── iam_permissions_restricted.json         # Restricted IAM role permissions
-│   ├── iam_trust_policy.json                   # Trust policy
-│
-├── monitoring/
-│   ├── cloudwatch_logs.sh (TBD)
+│   ├── iam_permissions_full.json                 # Full IAM role permissions (e.g. root user)
+│   ├── iam_permissions_restricted.json           # Restricted IAM role permissions
+│   ├── iam_trust_policy.json                     # Trust policy
 |
 │── scripts/
 │   ├── deploy_training.sh (TBD)
 |
-│── setup/
-│   ├── assume_iam_role.sh                      # Assumes IAM role
-│   ├── iam_role_setup.sh (NOT TESTED)          # IAM role setup only using AWS CLI
-│   ├── install_shell_requirements (NOT TESTED) # Installed shell requirments using Git Bash
-│   ├── launch_spot_instance.sh                 # Requests a Spot Instance (and enable SSH)
-│   ├── ssh_connect.sh                          # SSH into EC2 instance
-│   ├── terminate_ec2.sh                        # Terminates EC2 instance
-│   ├── detect_spot_termination.sh              # Detects AWS Spot termination
-│
+│── runtime/
+│   ├── 02_assume_iam_role.sh                      # Assumes IAM role
+│   ├── 03_launch_spot_instance.sh                 # Requests a Spot Instance (and enable SSH)
+│   ├── 04_ssh_connect.sh                          # SSH into EC2 instance
+│   ├── 05_fetch_data.sh                           # Download dataset from S3         
+│   ├── 06_terminate_ec2.sh                        # Terminates EC2 instance
+│   ├── monitoring/
+│   │   ├── cloudwatch_logs.sh (TBD)
+│   │   ├── detect_spot_termination.sh              # Detects AWS Spot termination
+|
 │── tests/
 │
-│── training/
-│   ├── fetch_data.sh                           # Download dataset from S3
-│   ├── train_model.py (TBD)                    # Starts model training
-│   ├── prepare_data.py                         # Prepares data for model input
+│── ml/
+│   │── training/
+│   │   ├── fetch_data.sh                           
+│   │   ├── train_model.py (TBD)                    # Starts model training
+│   │   ├── prepare_data.py                         # Prepares data for model input
+│   │   ├── checkpoint_save.sh
+│   │   ├── checkpoint_save.py
+│   │   ├── model_setup.py
 │
 │── .gitignore
 │── .pre-commit-config.yaml
-│── CHANGELOAG.md
+│── CHANGELOG.md
 │── config.yaml
 │── mypy.ini
 │── pyproject.toml
