@@ -5,7 +5,8 @@ import subprocess
 from tensorflow.keras.callbacks import ModelCheckpoint
 import training.data_prepare as data_prepare
 import training.data_check as data_check
-import training.model_setup as model_setup
+import training.model_configure as model_configure
+import training.checkpoint_save as checkpoint_save
 
 # Load config
 with open("config.yaml", "r") as f:
@@ -38,13 +39,20 @@ def main():
     print("Detecting AWS Spot termination in background)...")
     subprocess.Popen(["bash", "setup/detect_spot_termination.sh"])
 
-    # Define model based on config input
-    model = model_setup.main()
+    # Define model based on config input and load checkpoint
+    model = model_configure.main()
+    
+    # Train model, manual checkpointing
+    for epoch in range(1, EPOCHS + 1):
+        print(f"Training Epoch {epoch}/{EPOCHS}")
+        model.fit(dataset, epochs=1)
 
-    # add callback for checkpointing, or do it manually
-    # check for checkpoints? load last checkpoint if resuming
-    # Save final model if completed
+        # Save checkpoint every X epochs
+        if epoch % CHECKPOINT_INTERVAL == 0:
+            checkpoint_save.save_checkpoint(model, epoch=epoch)
 
+    print("Training completed!")
+    checkpoint_save.save_checkpoint(model, epoch="final")  # Final checkpoint save
 
 
 if __name__ == "__main__":

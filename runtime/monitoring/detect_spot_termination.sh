@@ -7,7 +7,7 @@ S3_BUCKET=$(yq e '.aws.s3_bucket' $CONFIG_FILE)
 
 INSTANCE_ID=$(cat setup/instance_id.txt)
 
-echo "🔍 Monitoring AWS Spot Termination Notices for Instance: $INSTANCE_ID..."
+echo "Monitoring AWS Spot Termination Notices for Instance: $INSTANCE_ID..."
 
 while true; do
     TERMINATION_NOTICE=$(aws ec2 describe-instance-status \
@@ -21,7 +21,7 @@ while true; do
         
         # Save checkpoint
         echo "Saving model checkpoint..."
-        bash training/save_checkpoint.sh
+        python3 training/checkpoint_save.py  
         
         # Stop training by creating a shutdown flag
         echo "Stopping model training..."
@@ -31,5 +31,5 @@ while true; do
         exit 0
     fi
 
-    sleep 5  # Check every 5 seconds
+    sleep 5 
 done
