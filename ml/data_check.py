@@ -1,7 +1,6 @@
 import os
 import yaml
 import pandas as pd
-import json
 import tensorflow as tf
 from PIL import Image
 
@@ -47,17 +46,6 @@ def check_text_file(file_path):
         return False
 
     return True
-
-def check_csv_format(file_path):
-    try:
-        df = pd.read_csv(file_path)
-        if df.empty:
-            print(f"Warning: CSV file '{file_path}' is empty!")
-            return False
-        return True
-    except Exception as e:
-        print(f"Error reading CSV: {file_path} ({e})")
-        return False
 
 
 

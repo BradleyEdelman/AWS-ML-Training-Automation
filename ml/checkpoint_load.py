@@ -12,28 +12,34 @@ CHECKPOINT_DIR = config["training"]["checkpoint_dir"]
 CHECKPOINT_FILE = config["training"]["checkpoint_file"]
 MODEL_NAME = config["training"]["model"]
 
-def load_checkpoint(model, CHECKPOINT_DIR, CHECKPOINT_FILE):
-    """
-    Loads the latest checkpoint for the given model.
-    """
+
+def checkpoint_load(model, directory, filename_prefix):
+
+    if not os.path.exists(directory):
+        print(f"Checkpoint directory '{directory}' not found. Starting fresh.")
+        return None
+
+    # Get all checkpoint files matching the filename prefix
+    checkpoint_files = [f for f in os.listdir(directory) if f.startswith(filename_prefix)]
+
+    if not checkpoint_files:
+        print("No checkpoint found. Training will start from scratch.")
+        return None
+
+    # Sort by modification time (latest first)
+    checkpoint_files.sort(key=lambda f: os.path.getmtime(os.path.join(directory, f)), reverse=True)
+
+    latest_checkpoint_path = os.path.join(directory, checkpoint_files[0])
+    print(f"Found latest checkpoint: {latest_checkpoint_path}")
+
     if model is None:
         print("Error: Model must be initialized before loading weights.")
         return None
 
-    checkpoint_path = os.path.join(CHECKPOINT_DIR, CHECKPOINT_FILE)
+    if latest_checkpoint_path is None:
+        return model  # Start training from scratch
 
-    if not os.path.exists(CHECKPOINT_DIR):
-        print(f"Checkpoint directory {CHECKPOINT_DIR} not found. Starting fresh.")
-        return model
-
-    latest_checkpoint = sorted([f for f in os.listdir(CHECKPOINT_DIR) if f.startswith(CHECKPOINT_FILE)], reverse=True)
-
-    if not latest_checkpoint:
-        print("No checkpoint found. Starting fresh.")
-        return model
-
-    latest_checkpoint_path = os.path.join(CHECKPOINT_DIR, latest_checkpoint[0])
-
+    # Load weights based on model type
     if MODEL_NAME in ["resnet50", "inceptionv3", "unet"]:
         print(f"Loading CNN checkpoint: {latest_checkpoint_path}")
         model.load_weights(latest_checkpoint_path)
@@ -43,8 +49,8 @@ def load_checkpoint(model, CHECKPOINT_DIR, CHECKPOINT_FILE):
         model = TFGPT2LMHeadModel.from_pretrained(latest_checkpoint_path)
 
     elif MODEL_NAME == "dcgan":
-        generator_path = latest_checkpoint_path.replace("_generator.h5", "")
-        discriminator_path = latest_checkpoint_path.replace("_discriminator.h5", "")
+        generator_path = latest_checkpoint_path.replace("_generator.h5", "_generator")
+        discriminator_path = latest_checkpoint_path.replace("_discriminator.h5", "_discriminator")
         print(f"Loading GAN generator checkpoint: {generator_path}")
         print(f"Loading GAN discriminator checkpoint: {discriminator_path}")
         model["generator"].load_weights(generator_path)
@@ -53,5 +59,5 @@ def load_checkpoint(model, CHECKPOINT_DIR, CHECKPOINT_FILE):
     else:
         print("Unknown model type. Skipping checkpoint load.")
 
-    print(f"Checkpoint {latest_checkpoint_path} loaded successfully!")
+    print("Checkpoint successfully loaded!")
     return model

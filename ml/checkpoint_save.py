@@ -20,25 +20,28 @@ os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 # Initialize S3 client
 s3 = boto3.client("s3")
 
+
 def save_checkpoint(model, epoch=None):
-    
     timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    
+
     if MODEL_NAME in ["resnet50", "inceptionv3", "unet"]:
         checkpoint_filename = f"{CHECKPOINT_FILE}_epoch{epoch}_{timestamp}.h5"
         model.save_weights(os.path.join(CHECKPOINT_DIR, checkpoint_filename))
-    
+
     elif MODEL_NAME == "gpt2":
         checkpoint_filename = f"{CHECKPOINT_FILE}_epoch{epoch}_{timestamp}"
         model.save_pretrained(os.path.join(CHECKPOINT_DIR, checkpoint_filename))
-    
+
     elif MODEL_NAME == "dcgan":
-        checkpoint_filename = f"{CHECKPOINT_FILE}_epoch{epoch}_{timestamp}_generator.h5"
-        generator.save_weights(os.path.join(CHECKPOINT_DIR, checkpoint_filename))
-        checkpoint_filename = f"{CHECKPOINT_FILE}_epoch{epoch}_{timestamp}_iscriminator.h5"
-        discriminator.save_weights(os.path.join(CHECKPOINT_DIR, checkpoint_filename))
-    
-    print(f"Checkpoint saved: {checkpoint_filename}")
+        generator_filename = f"{CHECKPOINT_FILE}_epoch{epoch}_{timestamp}_generator.h5"
+        model["generator"].save_weights(os.path.join(CHECKPOINT_DIR, generator_filename))
+
+        discriminator_filename = f"{CHECKPOINT_FILE}_epoch{epoch}_{timestamp}_discriminator.h5"
+        model["discriminator"].save_weights(os.path.join(CHECKPOINT_DIR, discriminator_filename))
+
+    else:
+        print(f"Checkpoint saving is not implemented for '{MODEL_NAME}'")
+        return
 
     # Upload to S3
     print(f"Uploading checkpoint to S3: s3://{S3_BUCKET}/{checkpoint_filename}...")
