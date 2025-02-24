@@ -18,9 +18,14 @@ I started this project since I wanted to get more involved in heavily ML models 
 ## 📂 File Structure (Estimated)
 ```
 aws-ml-training-automation/
-│── bootstrap/
-│   ├── 00_install_shell_requirements.sh         # Installed shell requirments using Git Bash
-│   ├── 01_iam_role_setup.sh                     # IAM role setup only using AWS CLI
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml
+│   │   ├── lint.yml
+│
+├── bootstrap/
+│   ├── 00_install_shell_requirements_client.sh
+│   ├── 01_iam_role_setup.sh
 │
 │── docs/
 │   ├── 00_aws_cli_installation.md               # Guide for installing AWS CLI and Git Bash
@@ -33,40 +38,47 @@ aws-ml-training-automation/
 │   ├── iam_permissions_restricted.json           # Restricted IAM role permissions
 │   ├── iam_trust_policy.json                     # Trust policy
 |
-│── scripts/
-│   ├── deploy_training.sh (TBD)
+├── ml/
+│   ├── checkpoint_load.py
+│   ├── checkpoint_save.py
+│   ├── data_check.py
+│   ├── data_prepare.py
+│   ├── model_configure.py
+│   ├── train_model.py
+│   ├── training_loops.py
+│
+├── requirements/
+│   ├── requirements-dev.txt
+│   ├── requirements-sh.txt
+│   ├── requirements.txt
+│
+├── runtime_client/
+│   ├── 02_assume_iam_role_client.sh
+│   ├── 03_launch_spot_instance.sh
+│   ├── 04_transfer_files.sh
+│   ├── 05_ssh_connect.sh
+│   ├── script_client.sh
 |
-│── runtime/
-│   ├── 02_assume_iam_role.sh                      # Assumes IAM role
-│   ├── 03_launch_spot_instance.sh                 # Requests a Spot Instance (and enable SSH)
-│   ├── 04_ssh_connect.sh                          # SSH into EC2 instance
-│   ├── 05_fetch_data.sh                           # Download dataset from S3         
-│   ├── 06_terminate_ec2.sh                        # Terminates EC2 instance
+│── runtime_spot/
 │   ├── monitoring/
 │   │   ├── cloudwatch_logs.sh (TBD)
-│   │   ├── detect_spot_termination.sh              # Detects AWS Spot termination
+│   │   ├── detect_spot_termination.sh
+│   ├── 06_install_requirements_spot.sh
+│   ├── 07_assume_iam_role_spot.sh
+│   ├── 08_fetch_data.sh
+│   ├── 09_terminate_ec2.sh
+│   ├── script_spot_instance.sh
 |
 │── tests/
-│
-│── ml/
-│   │── training/
-│   │   ├── fetch_data.sh                           
-│   │   ├── train_model.py (TBD)                    # Starts model training
-│   │   ├── prepare_data.py                         # Prepares data for model input
-│   │   ├── checkpoint_save.sh
-│   │   ├── checkpoint_save.py
-│   │   ├── model_setup.py
 │
 │── .gitignore
 │── .pre-commit-config.yaml
 │── CHANGELOG.md
 │── config.yaml
+│── LICENSE
 │── mypy.ini
 │── pyproject.toml
 │── README.md
-│── requirements-sh.txt
-│── requirements-dev.txt
-│── requirements.txt
 ```
 
 ---
@@ -98,7 +110,7 @@ Use the following scripts, as needed, to launch an EC2 instance, start training,
 | **1. Launch Spot Instance** | [`launch_spot_instance.sh`](setup/launch_spot_instance.sh) | Requests a new Spot Instance |
 | **2. SSH into Instance** | [`ssh_connect.sh`](setup/ssh_connect.sh) | Automatically SSHs into the instance |
 | **3. Fetch Data from S3** | [`fetch_data.sh`](training/fetch_data.sh) | Downloads dataset from S3 to the instance |
-| **4. Start Training** | [`train_model.py`](training/train_model.py) | Runs the ML model training |
+<!-- | **4. Start Training** | [`train_model.py`](training/train_model.py) | Runs the ML model training | -->
 <!-- | **5. Monitor for Spot Termination** | [`detect_spot_termination.sh`](setup/detect_spot_termination.sh) | Detects AWS termination notice |
 | **6. Save Checkpoint Before Shutdown** | [`save_checkpoint.py`](training/save_checkpoint.py) | Saves model checkpoint to S3 before shutdown |
 | **7. Terminate EC2 Instance** | [`terminate_ec2.sh`](setup/terminate_ec2.sh) | Stops EC2 instance when training completes or Spot Instance is terminated |

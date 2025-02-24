@@ -1,4 +1,0 @@
-jq
-yq
-awscli
-git

@@ -1,0 +1,10 @@
+jq
+yq
+awscli
+git
+curl
+wget
+unzip
+cloud-guest-utils
+util-linux
+

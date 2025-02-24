@@ -84,6 +84,12 @@
                 "ec2:AuthorizeSecurityGroupIngress"
             ],
             "Resource": "*"
+        },
+        {
+            "Sid": "AllowAssumeSelf",
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "arn:aws:iam::account-id:role/EC2-Training-Role"
         }
     ]
 }

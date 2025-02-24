@@ -4,7 +4,7 @@
 CONFIG_FILE="config.yaml"
 REGION=$(yq e '.aws.region' $CONFIG_FILE)
 
-INSTANCE_ID=$(cat setup/instance_id.txt)
+INSTANCE_ID=$(cat runtime_client/instance_id.txt)
 
 # Get the public IP of the instance
 PUBLIC_IP=$(aws ec2 describe-instances \
@@ -40,4 +40,4 @@ fi
 
 # SSH into instance
 echo "Connecting to EC2 Instance at $PUBLIC_IP..."
-ssh -i setup/ec2-training-key.pem ubuntu@$PUBLIC_IP
+ssh -i runtime_client/ec2-training-key.pem ubuntu@$PUBLIC_IP

@@ -11,7 +11,7 @@ VOLUME_SIZE=$(yq e '.ec2.volume_size' $CONFIG_FILE)
 USE_SPOT_INSTANCE=$(yq e '.ec2.use_spot_instance' $CONFIG_FILE)
 
 KEY_PAIR_NAME=$(yq e '.ec2.key_pair_name' $CONFIG_FILE)
-KEY_FILE_PATH="setup/$KEY_PAIR_NAME.pem"
+KEY_FILE_PATH="runtime_client/$KEY_PAIR_NAME.pem"
 
 # Check if key pair exists
 echo "Checking if key pair '$KEY_PAIR_NAME' exists..."
@@ -59,4 +59,4 @@ INSTANCE_ID=$(aws ec2 run-instances \
     --query 'Instances[0].InstanceId' --output text)
 
 echo "EC2 Instance Launched: $INSTANCE_ID"
-echo "$INSTANCE_ID" > setup/instance_id.txt  # Save instance ID for later use
+echo "$INSTANCE_ID" > runtime_client/instance_id.txt  # Save instance ID for later use
