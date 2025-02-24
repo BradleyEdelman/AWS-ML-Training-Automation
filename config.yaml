@@ -15,11 +15,11 @@ ec2:
 
 training:
   dataset_path: "data/"
-  model: "gpt2"
+  model: "resnet50" # "resnet50", "inceptionv3", "gpt2", "dcgan"
   fine_tune: true
   num_layers_to_unfreeze: 20
   epochs: 50 
   checkpoint_interval: 5
   checkpoint_dir: "checkpoints/"
-  checkpoint_file: "model_checkpoint.pth" 
+  checkpoint_file: "checkpoint" 
   resume_from_checkpoint: true

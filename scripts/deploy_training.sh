@@ -10,7 +10,7 @@ bash runtime/03_launch_spot_instance.sh
 
 # Connect to Instance
 echo "Connecting to EC2..."
-bash runtiem/04_ssh_connect.sh
+bash runtime/04_ssh_connect.sh
 
 # Fetch Data
 echo "Fetching Dataset..."

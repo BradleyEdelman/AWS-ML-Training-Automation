@@ -15,29 +15,13 @@ MODEL_NAME = config["training"]["model"]
 
 def checkpoint_load(model, directory, filename_prefix):
 
-    if not os.path.exists(directory):
-        print(f"Checkpoint directory '{directory}' not found. Starting fresh.")
-        return None
-
-    # Get all checkpoint files matching the filename prefix
     checkpoint_files = [f for f in os.listdir(directory) if f.startswith(filename_prefix)]
-
     if not checkpoint_files:
-        print("No checkpoint found. Training will start from scratch.")
         return None
-
-    # Sort by modification time (latest first)
     checkpoint_files.sort(key=lambda f: os.path.getmtime(os.path.join(directory, f)), reverse=True)
-
     latest_checkpoint_path = os.path.join(directory, checkpoint_files[0])
+
     print(f"Found latest checkpoint: {latest_checkpoint_path}")
-
-    if model is None:
-        print("Error: Model must be initialized before loading weights.")
-        return None
-
-    if latest_checkpoint_path is None:
-        return model  # Start training from scratch
 
     # Load weights based on model type
     if MODEL_NAME in ["resnet50", "inceptionv3", "unet"]:

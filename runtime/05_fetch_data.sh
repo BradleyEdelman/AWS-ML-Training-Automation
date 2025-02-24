@@ -16,20 +16,21 @@ mkdir -p "$DATASET_PATH"
 echo "Downloading dataset from S3 bucket: $S3_BUCKET..."
 aws s3 sync "s3://$S3_BUCKET/" "$DATASET_PATH/"
 
-# If resume flag is set, check and download checkpoint
+# If resume flag is set to yes, find and download the most recent checkpoint file
 if [[ "$RESUME_FROM_CHECKPOINT" == "true" ]]; then
     mkdir -p "$CHECKPOINT_DIR"
-    echo "Checking for saved checkpoint..."
-    aws s3 ls "s3://$S3_BUCKET/$CHECKPOINT_FILE" > /dev/null 2>&1
+    echo "Finding the latest checkpoint..."
 
-    # or load most recent checkpoint if specified one doesnt exist???
-    if [[ $? -eq 0 ]]; then
-        echo "Found checkpoint: $CHECKPOINT_FILE. Downloading..."
-        aws s3 cp "s3://$S3_BUCKET/$CHECKPOINT_FILE" "$CHECKPOINT_DIR/$CHECKPOINT_FILE"
-        echo "Checkpoint restored: $CHECKPOINT_DIR/$CHECKPOINT_FILE"
+    # List checkpoints, sort by last modified date, get the most recent file
+    LATEST_CHECKPOINT=$(aws s3 ls "s3://$S3_BUCKET/" | grep "$CHECKPOINT_FILE" | sort -k1,2 | tail -n 1 | awk '{print $4}')
+
+    if [[ -n "$LATEST_CHECKPOINT" ]]; then
+        echo "Found latest checkpoint: $LATEST_CHECKPOINT. Downloading..."
+        aws s3 cp "s3://$S3_BUCKET/$LATEST_CHECKPOINT" "$CHECKPOINT_DIR/$LATEST_CHECKPOINT"
+        echo "Checkpoint file downloaded: $CHECKPOINT_DIR/$LATEST_CHECKPOINT"
     else
         echo "No checkpoint found. Training will start from scratch."
     fi
 fi
 
-echo "Data preparation complete!"
+echo "Data download complete!"
