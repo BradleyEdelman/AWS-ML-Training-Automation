@@ -29,12 +29,11 @@ fi
 # Transfer files to EC2 instance
 echo "Transferring files to EC2 instance ($PUBLIC_IP)..."
 
-ssh -i "$KEY_FILE_PATH" ubuntu@"$PUBLIC_IP" "mkdir -p ~/aws-ml-training-automation/{bootstrap,requirements,ml,runtime_spot}"
+ssh -i "$KEY_FILE_PATH" ubuntu@"$PUBLIC_IP" "mkdir -p ~/{requirements,ml,runtime_spot}"
 
-scp -i "$KEY_FILE_PATH" -r bootstrap ubuntu@"$PUBLIC_IP":~/aws-ml-training-automation/
-scp -i "$KEY_FILE_PATH" -r requirements ubuntu@"$PUBLIC_IP":~/aws-ml-training-automation/
-scp -i "$KEY_FILE_PATH" -r ml ubuntu@"$PUBLIC_IP":~/aws-ml-training-automation/
-scp -i "$KEY_FILE_PATH" -r runtime_spot ubuntu@"$PUBLIC_IP":~/aws-ml-training-automation/
-scp -i "$KEY_FILE_PATH" -r config.yaml ubuntu@"$PUBLIC_IP":~/aws-ml-training-automation/
+scp -i "$KEY_FILE_PATH" -r requirements ubuntu@"$PUBLIC_IP":~/
+scp -i "$KEY_FILE_PATH" -r ml ubuntu@"$PUBLIC_IP":~/
+scp -i "$KEY_FILE_PATH" -r runtime_spot ubuntu@"$PUBLIC_IP":~/
+scp -i "$KEY_FILE_PATH" -r config.yaml ubuntu@"$PUBLIC_IP":~/
 
 echo "Files successfully transferred!"

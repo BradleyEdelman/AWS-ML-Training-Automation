@@ -6,21 +6,21 @@ REGION=$(yq e '.aws.region' $CONFIG_FILE)
 
 INSTANCE_ID=$(cat runtime_client/instance_id.txt)
 
-# Get the public IP of the instance
+# Public IP of the instance
 PUBLIC_IP=$(aws ec2 describe-instances \
     --instance-ids $INSTANCE_ID \
     --region $REGION \
     --query 'Reservations[0].Instances[0].PublicIpAddress' \
     --output text)
 
-# Get the security group ID
+# Security group ID
 SECURITY_GROUP_ID=$(aws ec2 describe-instances \
     --instance-ids $INSTANCE_ID \
     --region $REGION \
     --query 'Reservations[0].Instances[0].SecurityGroups[0].GroupId' \
     --output text)
 
-# Check if SSH is already open
+# Check if SSH is open
 SSH_RULE_EXISTS=$(aws ec2 describe-security-groups \
     --group-ids $SECURITY_GROUP_ID \
     --region $REGION \

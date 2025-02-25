@@ -15,7 +15,7 @@
             ]
         },
         {
-            "Sid": "EC2FullLaunchPermissions",
+            "Sid": "EC2LaunchPermissions",
             "Effect": "Allow",
             "Action": [
                 "ec2:RunInstances",
@@ -30,10 +30,23 @@
             "Resource": "*"
         },
         {
-            "Sid": "IAMPassRole",
+            "Sid": "AllowPassRoleForEC2",
             "Effect": "Allow",
             "Action": "iam:PassRole",
-            "Resource": "arn:aws:iam::account-id:role/EC2-Training-Role"
+            "Resource": [
+                "arn:aws:iam::account-id:role/EC2-Training-Role"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "iam:PassedToService": "ec2.amazonaws.com"
+                }
+            }
+        },
+        {
+            "Sid": "AllowInstanceProfilePassRole",
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": "arn:aws:iam::account-id:instance-profile/EC2-Training-Role"
         },
         {
             "Sid": "CloudWatchLoggingLimited",

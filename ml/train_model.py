@@ -2,10 +2,10 @@ import os
 import tensorflow as tf
 import yaml
 import subprocess
-import training.data_prepare as data_prepare
-import training.data_check as data_check
-import training.model_configure as model_configure
-import training.training_loops as training_loops 
+import ml.data_prepare as data_prepare
+import ml.data_check as data_check
+import ml.model_configure as model_configure
+import ml.training_loops as training_loops 
 
 # Load config
 with open("config.yaml", "r") as f:

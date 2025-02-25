@@ -7,4 +7,5 @@ wget
 unzip
 cloud-guest-utils
 util-linux
+dos2unix
 

@@ -59,4 +59,4 @@ INSTANCE_ID=$(aws ec2 run-instances \
     --query 'Instances[0].InstanceId' --output text)
 
 echo "EC2 Instance Launched: $INSTANCE_ID"
-echo "$INSTANCE_ID" > runtime_client/instance_id.txt  # Save instance ID for later use
+echo "$INSTANCE_ID" > runtime_client/instance_id.txt  # Save instance ID for later

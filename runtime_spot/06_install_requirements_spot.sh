@@ -2,41 +2,44 @@
 
 echo "Starting Spot Instance setup..."
 
-# 1️.1 Install shell dependencies
-echo "Installing shell dependencies..."
-sudo apt-get update -y
+# 1. Install shell dependencies
+export DEBIAN_FRONTEND=noninteractive  # No user prompts
 
-# Fix Windows carriage return thing
+echo "Updating package lists..."
+sudo apt-get update -y -q
+
+# Fix Windows carriage return issues
 sed -i 's/\r$//' requirements/requirements-sh.txt
 
-# Install shell dependencies via APT or Snap (yq has issues)
+# Install shell dependencies via APT (except yq, which is installed via Snap)
+echo "Installing shell dependencies..."
 while IFS= read -r package; do
-    package=$(echo "$package" | tr -d '\r') 
-    if [[ -z "$package" ]]; then
-        continue
+    package=$(echo "$package" | tr -d '\r')  # Remove Windows carriage return
+    if [[ -z "$package" || "$package" == "yq" ]]; then
+        continue  # Skip empty lines and yq (installed separately)
     fi
 
-    echo "Installing $package via APT..."
-    if ! sudo apt-get install -y "$package"; then
-        echo "APT install failed for $package, trying Snap..."
-        sudo snap install "$package" || echo "Failed to install $package"
-    fi
+    echo "Installing $package..."
+    sudo apt-get install -y -q "$package"
 done < requirements/requirements-sh.txt
 
-echo "Shell dependencies installed."
+# Install `yq` separately using Snap
+echo "Installing yq via Snap..."
+sudo snap install yq --quiet || echo "Failed to install yq"
+
+echo "All shell dependencies installed."
 
 # Disable needrestart prompts
 export NEEDRESTART_MODE=a
 export NEEDRESTART_SUSPEND=1
 
 
-
-# 2. Expand Spot Storage
+# 2. Expand Spot storage to match config.yaml
 echo "Checking and expanding available storage..."
 
-# Identify root partition dynamically
+# Identify root partition
 DEVICE=$(lsblk -o NAME,MOUNTPOINT | awk '$2 == "/" {print "/dev/" $1}' | head -n 1)
-EBS_VOLUME=$(lsblk -o NAME | grep nvme1n1 | head -n 1)  # Detect XGB EBS volume
+EBS_VOLUME=$(lsblk -o NAME | grep nvme1n1 | head -n 1)  # Detect attached EBS volume
 
 if [[ -z "$EBS_VOLUME" ]]; then
     echo "ERROR: No additional EBS volume found. Skipping expansion."
@@ -49,23 +52,17 @@ else
     echo "Storage expansion complete!"
 fi
 
-# Verify new space
+# Verify disk space
 df -h
 
 
-
 # 3. Install AWS CLI
-
-# Ensure unzip is installed before AWS CLI setup
-if ! command -v unzip &> /dev/null; then
-    echo "Installing unzip..."
-    sudo apt-get install -y unzip
-fi
+echo "Checking for AWS CLI..."
 
 if ! command -v aws &> /dev/null; then
     echo "Installing AWS CLI..."
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-    unzip awscliv2.zip
+    curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip -q awscliv2.zip
     sudo ./aws/install
     rm -rf aws awscliv2.zip
     echo "AWS CLI installed successfully."
@@ -74,20 +71,25 @@ else
 fi
 
 
-
 # 4. Install Python and dependencies
 echo "Setting up Python environment..."
-sudo apt-get install -y python3 python3-pip python3-venv
+sudo apt-get install -y -q python3 python3-pip python3-venv
 
-# Create venv
-if [[ ! -d "venv" ]]; then
-    python3 -m venv venv
+# Define the venv directory
+VENV_DIR="$HOME/venv"
+
+# Create virtual environment in a persistent location
+if [[ ! -d "$VENV_DIR" ]]; then
+    python3 -m venv "$VENV_DIR"
 fi
-source venv/bin/activate
 
-pip install --upgrade pip
-pip install -r requirements/requirements.txt
+echo "Activating virtual environment..."
+source "$VENV_DIR/bin/activate"
+
+pip install --upgrade pip -q
+pip install -r requirements/requirements.txt -q
 
 echo "Python dependencies installed."
+
 
 echo "Spot Instance setup complete!"
