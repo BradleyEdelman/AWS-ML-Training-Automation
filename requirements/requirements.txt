@@ -4,4 +4,4 @@ tensorflow
 transformers
 pandas
 pillow
-yaml
+tf-keras

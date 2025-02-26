@@ -9,17 +9,16 @@ with open("config.yaml", "r") as f:
 
 S3_BUCKET = config["aws"]["s3_bucket"]
 CHECKPOINT_DIR = config["training"]["checkpoint_dir"]
-CHECKPOINT_FILE = config["training"]["checkpoint_file"]
+CHECKPOINT_PREFIX = config["training"]["checkpoint_prefix"]
 MODEL_NAME = config["training"]["model"]
 
+def checkpoint_load(model):
 
-def checkpoint_load(model, directory, filename_prefix):
-
-    checkpoint_files = [f for f in os.listdir(directory) if f.startswith(filename_prefix)]
+    checkpoint_files = [f for f in os.listdir(CHECKPOINT_DIR) if f.startswith(CHECKPOINT_PREFIX)]
     if not checkpoint_files:
-        return None
-    checkpoint_files.sort(key=lambda f: os.path.getmtime(os.path.join(directory, f)), reverse=True)
-    latest_checkpoint_path = os.path.join(directory, checkpoint_files[0])
+        return model
+    checkpoint_files.sort(key=lambda f: os.path.getmtime(os.path.join(CHECKPOINT_DIR, f)), reverse=True)
+    latest_checkpoint_path = os.path.join(CHECKPOINT_DIR, checkpoint_files[0])
 
     print(f"Found latest checkpoint: {latest_checkpoint_path}")
 

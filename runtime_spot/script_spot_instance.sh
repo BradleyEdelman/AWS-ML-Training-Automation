@@ -3,6 +3,7 @@
 # Installing shell requirements onto fresh Spot Instance
 echo "Installing shell requirements..."
 bash runtime_spot/06_install_requirements_spot.sh
+sudo snap install yq
 
 # Convert a few scripts from Windows to Unix
 dos2unix config.yaml
@@ -28,5 +29,5 @@ fi
 
 # Resume or Start Training
 echo "Starting Training..."
-cd ml
-python3 train_model.py
+source venv/bin/activate
+python3 -m ml.train_model

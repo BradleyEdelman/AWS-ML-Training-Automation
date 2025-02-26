@@ -2,7 +2,7 @@ import os
 import yaml
 import tensorflow as tf
 from transformers import TFGPT2LMHeadModel
-import training.checkpoint_load as checkpoint_load
+from ml import checkpoint_load
 
 # Load config
 with open("config.yaml", "r") as f:
@@ -13,7 +13,7 @@ FINE_TUNE = config["training"]["fine_tune"]
 NUM_LAYERS_TO_UNFREEZE = config["training"]["num_layers_to_unfreeze"]
 DATA_PATH = config["training"]["dataset_path"]
 CHECKPOINT_DIR = config["training"]["checkpoint_dir"]
-CHECKPOINT_FILE = config["training"]["checkpoint_file"]
+CHECKPOINT_PREFIX = config["training"]["checkpoint_prefix"]
 RESUME_TRAINING = config["training"]["resume_from_checkpoint"]
 
 def model_create(model_name, num_classes=None):
@@ -86,7 +86,7 @@ def main():
 
     # If resuming training, load the checkpoint
     if RESUME_TRAINING:
-        model = checkpoint_load.load_checkpoint(model)
+        model = checkpoint_load.checkpoint_load(model)
 
     print("Model configuration complete.")
     model.summary()

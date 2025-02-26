@@ -2,10 +2,10 @@ import os
 import tensorflow as tf
 import yaml
 import subprocess
-import ml.data_prepare as data_prepare
-import ml.data_check as data_check
-import ml.model_configure as model_configure
-import ml.training_loops as training_loops 
+from ml import data_prepare
+from ml import data_check
+from ml import model_configure
+from ml import training_loops
 
 # Load config
 with open("config.yaml", "r") as f:
@@ -22,6 +22,7 @@ def main():
     if not data_check.main():
         print("Data format validation failed. Exiting...")
         return
+    ####### FIX OUTPUT!!!!
 
     # Prepare dataset
     print("Preparing dataset for training...")
@@ -36,6 +37,8 @@ def main():
 
     # Load model
     model = model_configure.main()
+
+    ##### COMPILE
 
     # Run training loop with custom checkpointing
     if MODEL_NAME in ["resnet50", "inceptionv3"]:

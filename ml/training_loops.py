@@ -1,7 +1,7 @@
-import training.checkpoint_save as checkpoint_save
 import tensorflow as tf
 from transformers import Trainer, TrainingArguments
 import yaml
+from ml import checkpoint_save
 
 # Load config
 with open("config.yaml", "r") as f:

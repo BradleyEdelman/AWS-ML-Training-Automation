@@ -3,7 +3,7 @@ aws:
   iam_role_arn: "arn:aws:iam::084375547262:role/EC2-Training-Role"
   iam_instance_profile: "EC2-Training-Role"
   region: "eu-central-1"
-  s3_bucket: "grateful-dead-chatbot"
+  s3_bucket: "grateful-dead-chatbot/class_test"
   session_name: "EC2-Training-Session"
 
 ec2:
@@ -21,5 +21,5 @@ training:
   epochs: 50 
   checkpoint_interval: 5
   checkpoint_dir: "checkpoints/"
-  checkpoint_file: "checkpoint" 
+  checkpoint_prefix: "checkpoint" 
   resume_from_checkpoint: true

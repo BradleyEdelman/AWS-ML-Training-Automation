@@ -11,7 +11,7 @@ with open("config.yaml", "r") as f:
 
 S3_BUCKET = config["aws"]["s3_bucket"]
 CHECKPOINT_DIR = config["training"]["checkpoint_dir"]
-CHECKPOINT_FILE = config["training"]["checkpoint_file"]
+CHECKPOINT_PREFIX = config["training"]["checkpoint_prefix"]
 MODEL_NAME = config["training"]["model"]
 
 # Ensure checkpoint directory exists
@@ -25,18 +25,18 @@ def save_checkpoint(model, epoch=None):
     timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
     if MODEL_NAME in ["resnet50", "inceptionv3", "unet"]:
-        checkpoint_filename = f"{CHECKPOINT_FILE}_epoch{epoch}_{timestamp}.h5"
+        checkpoint_filename = f"{CHECKPOINT_PREFIX}_epoch{epoch}_{timestamp}.h5"
         model.save_weights(os.path.join(CHECKPOINT_DIR, checkpoint_filename))
 
     elif MODEL_NAME == "gpt2":
-        checkpoint_filename = f"{CHECKPOINT_FILE}_epoch{epoch}_{timestamp}"
+        checkpoint_filename = f"{CHECKPOINT_PREFIX}_epoch{epoch}_{timestamp}"
         model.save_pretrained(os.path.join(CHECKPOINT_DIR, checkpoint_filename))
 
     elif MODEL_NAME == "dcgan":
-        generator_filename = f"{CHECKPOINT_FILE}_epoch{epoch}_{timestamp}_generator.h5"
+        generator_filename = f"{CHECKPOINT_PREFIX}_epoch{epoch}_{timestamp}_generator.h5"
         model["generator"].save_weights(os.path.join(CHECKPOINT_DIR, generator_filename))
 
-        discriminator_filename = f"{CHECKPOINT_FILE}_epoch{epoch}_{timestamp}_discriminator.h5"
+        discriminator_filename = f"{CHECKPOINT_PREFIX}_epoch{epoch}_{timestamp}_discriminator.h5"
         model["discriminator"].save_weights(os.path.join(CHECKPOINT_DIR, discriminator_filename))
 
     else:
