@@ -26,9 +26,7 @@ def train_cnn(model, dataset):
 
 
 def train_gpt2(model, dataset):
-    """
-    Fine-tunes GPT-2 using Hugging Face Trainer with **manual** epoch-by-epoch checkpointing.
-    """
+
     training_args = TrainingArguments(
         output_dir=CHECKPOINT_DIR,
         save_strategy="no",  # disable auto_checkpointing, we do it ourselves
@@ -51,9 +49,7 @@ def train_gpt2(model, dataset):
 
 
 def train_dcgan(model, dataset):
-    """
-    Training loop for GANs with manual checkpointing every X epochs.
-    """
+    
     generator = model["generator"]
     discriminator = model["discriminator"]
 

@@ -5,7 +5,7 @@ CONFIG_FILE="config.yaml"
 REGION=$(yq e '.aws.region' $CONFIG_FILE)
 S3_BUCKET=$(yq e '.aws.s3_bucket' $CONFIG_FILE)
 
-INSTANCE_ID=$(cat setup/instance_id.txt)
+INSTANCE_ID=$(cat instance_id.txt)
 
 echo "Monitoring AWS Spot Termination Notices for Instance: $INSTANCE_ID..."
 

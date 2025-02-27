@@ -1,0 +1,7 @@
+model: resnet50
+num_layers_to_unfreeze: 20
+learning_rate: 0.0001
+batch_size: 32
+optimizer: adam
+loss_function: categorical_crossentropy
+metrics: [accuracy]

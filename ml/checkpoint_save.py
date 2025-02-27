@@ -45,5 +45,8 @@ def save_checkpoint(model, epoch=None):
 
     # Upload to S3
     print(f"Uploading checkpoint to S3: s3://{S3_BUCKET}/{checkpoint_filename}...")
-    s3.upload_file(os.path.join(CHECKPOINT_DIR, checkpoint_filename), S3_BUCKET, checkpoint_filename)
+    # rearrange names a bit
+    s3_bucket = S3_BUCKET.split('/',1)[0]
+    s3_checkpoint_filename = f"{S3_BUCKET.split('/',1)[1]}{'/'}{checkpoint_filename}"
+    s3.upload_file(os.path.join(CHECKPOINT_DIR, checkpoint_filename), s3_bucket, s3_checkpoint_filename)
     print("Checkpoint uploaded successfully!")

@@ -57,23 +57,19 @@ def main():
 
         for folder in os.listdir(DATA_PATH):
             folder_path = os.path.join(DATA_PATH, folder) 
-            check_images(folder_path)
+            check = check_images(folder_path)
+            return check
 
     elif MODEL_NAME == "unet":
-        check_images(os.path.join(DATA_PATH, "images"))
-        check_images(os.path.join(DATA_PATH, "masks"))
+        check = check_images(os.path.join(DATA_PATH, "images"))
+        check = check_images(os.path.join(DATA_PATH, "masks"))
 
     elif MODEL_NAME == "gpt2":
-        check_text_file(os.path.join(DATA_PATH, "dataset.txt"))
+        check = check_text_file(os.path.join(DATA_PATH, "dataset.txt"))
+        return check
 
     elif MODEL_NAME == "dcgan":
-        check_images(os.path.join(DATA_PATH, "real")) and check_images(os.path.join(DATA_PATH, "generated"))
-
-    # elif MODEL_NAME == "stable-diffusion":
-        # check_text_file(os.path.join(DATASET_PATH, "prompts.txt"))
-        # check_json_format(os.path.join(DATASET_PATH, "metadata.json"))
-        # if os.path.exists(os.path.join(DATASET_PATH, "reference_images")):
-        #     check_images(os.path.join(DATASET_PATH, "reference_images"))
+        check = check_images(os.path.join(DATA_PATH, "real")) and check_images(os.path.join(DATA_PATH, "generated"))
 
     else:
         print(f"Model '{MODEL_NAME}' is not supported.")

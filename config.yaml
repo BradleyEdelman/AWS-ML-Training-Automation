@@ -17,9 +17,8 @@ training:
   dataset_path: "data/"
   model: "resnet50" # "resnet50", "inceptionv3", "gpt2", "dcgan"
   fine_tune: true
-  num_layers_to_unfreeze: 20
-  epochs: 50 
-  checkpoint_interval: 5
+  epochs: 2 
+  checkpoint_interval: 1
   checkpoint_dir: "checkpoints/"
   checkpoint_prefix: "checkpoint" 
   resume_from_checkpoint: true

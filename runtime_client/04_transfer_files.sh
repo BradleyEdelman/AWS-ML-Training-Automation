@@ -34,6 +34,7 @@ ssh -i "$KEY_FILE_PATH" ubuntu@"$PUBLIC_IP" "mkdir -p ~/{requirements,ml,runtime
 scp -i "$KEY_FILE_PATH" -r requirements ubuntu@"$PUBLIC_IP":~/
 scp -i "$KEY_FILE_PATH" -r ml ubuntu@"$PUBLIC_IP":~/
 scp -i "$KEY_FILE_PATH" -r runtime_spot ubuntu@"$PUBLIC_IP":~/
-scp -i "$KEY_FILE_PATH" -r config.yaml ubuntu@"$PUBLIC_IP":~/
+scp -i "$KEY_FILE_PATH" -r config*.yaml ubuntu@"$PUBLIC_IP":~/
+scp -i "$KEY_FILE_PATH" -r runtime_client/instance_id.txt ubuntu@"$PUBLIC_IP":~/
 
 echo "Files successfully transferred!"

@@ -22,7 +22,6 @@ def main():
     if not data_check.main():
         print("Data format validation failed. Exiting...")
         return
-    ####### FIX OUTPUT!!!!
 
     # Prepare dataset
     print("Preparing dataset for training...")
@@ -33,12 +32,10 @@ def main():
 
     # Start AWS Spot termination detection in the background
     print("Detecting AWS Spot termination in background...")
-    subprocess.Popen(["bash", "setup/detect_spot_termination.sh"])
+    subprocess.Popen(["bash", "runtime_spot/monitoring/detect_spot_termination.sh"])
 
-    # Load model
+    # Load model and compile model (if applicable)
     model = model_configure.main()
-
-    ##### COMPILE
 
     # Run training loop with custom checkpointing
     if MODEL_NAME in ["resnet50", "inceptionv3"]:

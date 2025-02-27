@@ -6,6 +6,9 @@ REGION=$(yq e '.aws.region' $CONFIG_FILE)
 
 INSTANCE_ID=$(cat runtime_client/instance_id.txt)
 
+# Reassume IAM role to ensure you have permission to terminate EC2 insance
+. runtime_client/02_assume_iam_role_client.sh
+
 # Check if instance is already terminated
 INSTANCE_STATE=$(aws ec2 describe-instances \
     --instance-ids "$INSTANCE_ID" \
