@@ -28,10 +28,12 @@ aws-ml-training-automation/
 │   ├── 01_iam_role_setup.sh
 │
 │── docs/
-│   ├── 00_aws_cli_installation.md               # Guide for installing AWS CLI and Git Bash
-│   ├── 01_aws_iam_setup.md                      # AWS IAM role setup guide
-│   ├── 02_aws_assume_role.md                    # Guide to assuming IAM role using AWS CLI
-│   ├── 03_aws_S3_upload_data.md                 # Guide for data upload using AWS CLI
+│   ├── 01_aws_cli_installation.md
+│   ├── 02_bootstrap_scripts.md
+│   ├── 02.1_aws_iam_setup.md
+│   ├── 03_aws_S3_upload_data.md
+│   ├── 04_config_yaml_guide.md
+│   ├── 05_workflow_overview.md
 │
 │── example_files/
 │   ├── iam_permissions_full.json                 # Full IAM role permissions (e.g. root user)
@@ -86,56 +88,32 @@ aws-ml-training-automation/
 
 ---
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 ### 1. Install and setup AWS CLI and Git Bash
-- Refer to [`00_aws_cli_installation.md`](docs/00_aws_cli_installation.md) to install **AWS CLI** and **Git Bash**.
+- Refer to [`01_aws_cli_installation.md`](docs/01_aws_cli_installation.md) to install **AWS CLI** and **Git Bash**.
 
 ### 2. Set up AWS IAM role
-- Follow [`01_aws_iam_setup.md`](docs/01_aws_iam_setup.md) to request or create an **IAM role** with the necessary permissions.
+- Follow [`02_bootstrap_scripts.md`](docs/02_bootstrap_scripts.md) to request or create an **IAM role** with the necessary permissions, and to install local dependencies.
 
-### 3. Configure AWS & Training Settings
-- Modify [`config.yaml`](config.yaml) to set up:
+### 3. Upload Data to your S3 Bucket
+- Upload datasets to S3 as described in [`03_aws_s3_upload_data.md`](docs/03_aws_s3_upload_data.md).
+
+### 4. Configure AWS & Training Settings
+- Modify [`config.yaml`](config.yaml) according to details in [`04_config_yaml_guide.md](docs/04_config_yaml_guide.md)to set up:
   - AWS IAM Role
   - Instance type
   - S3 bucket for dataset storage
   - Model training parameters
 - Also modify model type-specific config files (e.g. `config_cnn.yaml`, `config_llm.yaml`)
 
-### 4. Assume IAM role
-- Assume your IAM role according to [`02_aws_assume_role.md`](docs/02_aws_assume_role.md) with proper permissions for accessing data, requesting spot intances and running scripts.
+### 5. Workflow overview
+The following scripts can be used to automatically access the AWS CLI, launch an EC2 instance, start training, and handle interruptions. This automation is split into **two major scripts** that are described in further detail in the [`05_workflow_overview.md`](docs/05_workflow_overview.md) file:  
 
-### 5. Upload Data to your S3 Bucket
-- Upload datasets to S3 as described in [`03_aws_s3_upload_data.md`](docs/03_aws_s3_upload_data.md).
+1️. **`script_client.sh`** (Run from your local machine)
+- Sets up access to AWS services from your local client machine and prepares the EC2 Spot Instance for ML training.
 
-### 6. Workflow overview
-The following scripts can be used to automatically access the AWS CLI, launch an EC2 instance, start training, and handle interruptions. This automation is split into **two major scripts**:  
-
-1️. **`script_client.sh`** (Run from your local machine)  
 2️. **`script_spot_instance.sh`** (Runs inside the AWS Spot Instance)  
-
-Here is further information about what each of these scripts does. Further details about each step can be found in the linked script.
----
-
-### **Client-Side Workflow: [`script_client.sh`](runtime_client/script_client.sh)**
-| **Step**                | **Script** | **Description** |
-|-------------------------|-----------|----------------|
-| **1. Assume IAM Role** | [`02_assume_iam_role_client.sh`](runtime_client/02_assume_iam_role_client.sh) | Assumes AWS IAM role for authentication |
-| **2. Launch Spot Instance** | [`03_launch_spot_instance.sh`](runtime_client/03_launch_spot_instance.sh) | Requests a new AWS Spot Instance |
-| **3. Transfer Files** | [`04_transfer_files.sh`](runtime_client/04_transfer_files.sh) | Copies scripts, and configs to Spot Instance |
-| **4. SSH into Instance** | [`05_ssh_connect.sh`](runtime_client/05_ssh_connect.sh) | Connects to Spot Instance |
-
----
-
-### **Spot Instance Workflow [`script_spot_instance.sh`](runtime_spot/script_spot_instance.sh)**
-| **Step**                | **Script** | **Description** |
-|-------------------------|-----------|----------------|
-| **5. Install Dependencies** | [`06_install_requirements_spot.sh`](runtime_spot/06_install_requirements_spot.sh) | Installs Python and shell dependencies |
-| **6. Assume IAM Role (on Spot)** | [`07_assume_iam_role_spot.sh`](runtime_spot/07_assume_iam_role_spot.sh) | Ensures Spot Instance has proper AWS permissions |
-| **7. Fetch Data from S3** | [`08_fetch_data.sh`](runtime_spot/08_fetch_data.sh) | Downloads dataset and previous training checkpoints from S3 |
-| **8. Start Training** | [`train_model.py`](ml/train_model.py) | Runs ML training |
-| **9. Detect Spot Termination** | [`detect_spot_termination.sh`](runtime_spot/monitoring/detect_spot_termination.sh) | Monitors for AWS Spot shutdown notice in the background |
-| **10. Save Checkpoint** | [`checkpoint_save.py`](ml/checkpoint_save.py) | Saves training progress to S3 at specified intervals (epochs) |
-| **11. Terminate EC2 Instance** | [`09_terminate_ec2.sh`](runtime_spot/09_terminate_ec2.sh) | Ensures cleanup and Spot Instance termination | 
+- Fetches data and prior training checkpoints, and configures and deploys training on the EC2 instance.
 
 ---
 

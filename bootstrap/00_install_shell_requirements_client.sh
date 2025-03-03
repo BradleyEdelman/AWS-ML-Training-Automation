@@ -18,6 +18,6 @@ while IFS= read -r package; do
     else
         echo "$package is already installed."
     fi
-done < requirements_sh.txt
+done < requirements/requirements_sh.txt
 
 echo "All dependencies installed. Restart Git Bash to ensure changes take effect."

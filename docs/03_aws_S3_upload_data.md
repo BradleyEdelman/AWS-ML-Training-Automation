@@ -1,4 +1,4 @@
-# Upload Data to S3
+# Upload Data to S3 Guide
 
 Once you or your administrator has created your **Amazon S3** bucket and given you access, you can upload data. Using the AWS CLI is preferred for files over 5GB. Furthermore, for these large files, it is not possible to move them once uploaded so make sure that the final destination is specified during upload.
 
