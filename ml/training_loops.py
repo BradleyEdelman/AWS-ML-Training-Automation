@@ -1,6 +1,6 @@
-import tensorflow as tf
+import yaml  # type: ignore
 from transformers import Trainer, TrainingArguments
-import yaml
+
 from ml import checkpoint_save
 
 # Load config
@@ -22,7 +22,7 @@ def train_cnn(model, dataset):
         if epoch % CHECKPOINT_INTERVAL == 0:
             checkpoint_save.save_checkpoint(model, epoch=epoch)
 
-    checkpoint_save.save_checkpoint(model, epoch="final")
+    checkpoint_save.checkpoint_save(model, epoch="final")
 
 
 def train_gpt2(model, dataset):
@@ -42,30 +42,29 @@ def train_gpt2(model, dataset):
 
         # Manually save checkpoint every X epochs
         if epoch % CHECKPOINT_INTERVAL == 0:
-            checkpoint_save.save_checkpoint(model, epoch=epoch)
+            checkpoint_save.checkpoint_save(model, epoch=epoch)
 
     # Final checkpoint save
-    checkpoint_save.save_checkpoint(model, epoch="final")
+    checkpoint_save.checkpoint_save(model, epoch="final")
 
 
 def train_dcgan(model, dataset):
-    
-    generator = model["generator"]
-    discriminator = model["discriminator"]
+
+    # generator = model["generator"]
+    # discriminator = model["discriminator"]
 
     for epoch in range(1, EPOCHS + 1):
         print(f"Training GAN Epoch {epoch}/{EPOCHS}")
 
-        for real_images in dataset:
-            noise = tf.random.normal([real_images.shape[0], 100])
-            generated_images = generator(noise, training=True)
-            real_output = discriminator(real_images, training=True)
-            fake_output = discriminator(generated_images, training=True)
+        # for real_images in dataset:
+        #     noise = tf.random.normal([real_images.shape[0], 100])
+        #     generated_images = generator(noise, training=True)
+        #     real_output = discriminator(real_images, training=True)
+        #     fake_output = discriminator(generated_images, training=True)
 
         # Manually save checkpoint every X epochs
         if epoch % CHECKPOINT_INTERVAL == 0:
-            checkpoint_save.save_checkpoint(model, epoch=epoch)
+            checkpoint_save.checkpoint_save(model, epoch=epoch)
 
     # Final checkpoint save
-    checkpoint_save.save_checkpoint(model, epoch="final")
-
+    checkpoint_save.checkpoint_save(model, epoch="final")

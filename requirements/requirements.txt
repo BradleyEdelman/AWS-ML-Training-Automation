@@ -1,7 +1,8 @@
 boto3
 numpy     
-tensorflow
+# tensorflow
 transformers
 pandas
 pillow
 tf-keras
+types-PyYAML

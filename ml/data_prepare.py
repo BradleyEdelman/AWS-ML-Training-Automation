@@ -1,5 +1,5 @@
-import yaml
 import tensorflow as tf
+import yaml  # type: ignore
 
 # Load config
 with open("config.yaml", "r") as f:
@@ -10,7 +10,7 @@ DATA_PATH = config["training"]["dataset_path"]
 
 
 def prepare_cnn_data():
-    
+
     print("Preparing Image Data for CNN...")
 
     with open("config_cnn.yaml", "r") as f:
@@ -22,11 +22,11 @@ def prepare_cnn_data():
     dataset = tf.keras.utils.image_dataset_from_directory(
         directory=DATA_PATH,
         image_size=(224, 224),
-        color_mode='rgb',
+        color_mode="rgb",
         batch_size=BATCH_SIZE,
-        label_mode='categorical'
+        label_mode="categorical",
     )
-    
+
     num_classes = len(dataset.class_names)
     print(f"Detected {num_classes} classes:")
     for i, class_name in enumerate(dataset.class_names):
@@ -35,11 +35,11 @@ def prepare_cnn_data():
     print("CNN Data Preparation Complete.")
     return dataset
 
-def prepare_llm_data():
-    print("Preparing Text Data for GPT-2...")
 
-    print("GPT-2 Data Preparation Complete.")
-
+# def prepare_llm_data():
+#     print("Preparing Text Data for GPT-2...")
+#     print("GPT-2 Data Preparation Complete.")
+#     return dataset
 
 
 def main():
@@ -49,10 +49,12 @@ def main():
         return prepare_cnn_data()
 
     elif MODEL_NAME == "gpt2":
-        return prepare_llm_data()
-    
+        # return prepare_llm_data()
+        return None
+
     else:
         print(f"Model '{MODEL_NAME}' is not supported.")
+        return None
 
 
 if __name__ == "__main__":

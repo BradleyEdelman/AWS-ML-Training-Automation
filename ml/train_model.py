@@ -1,11 +1,9 @@
 import os
-import tensorflow as tf
-import yaml
 import subprocess
-from ml import data_prepare
-from ml import data_check
-from ml import model_configure
-from ml import training_loops
+
+import yaml  # type: ignore
+
+from ml import data_check, data_prepare, model_configure, training_loops
 
 # Load config
 with open("config.yaml", "r") as f:

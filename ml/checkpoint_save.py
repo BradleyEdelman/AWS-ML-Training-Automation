@@ -1,9 +1,8 @@
-import os
 import datetime
-import tensorflow as tf
+import os
+
 import boto3
-import yaml
-from transformers import TFGPT2LMHeadModel
+import yaml  # type: ignore
 
 # Load config
 with open("config.yaml", "r") as f:
@@ -14,6 +13,7 @@ CHECKPOINT_DIR = config["training"]["checkpoint_dir"]
 CHECKPOINT_PREFIX = config["training"]["checkpoint_prefix"]
 MODEL_NAME = config["training"]["model"]
 
+
 # Ensure checkpoint directory exists
 os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 
@@ -21,7 +21,7 @@ os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 s3 = boto3.client("s3")
 
 
-def save_checkpoint(model, epoch=None):
+def checkpoint_save(model, epoch=None):
     timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
     if MODEL_NAME in ["resnet50", "inceptionv3", "unet"]:
@@ -33,11 +33,19 @@ def save_checkpoint(model, epoch=None):
         model.save_pretrained(os.path.join(CHECKPOINT_DIR, checkpoint_filename))
 
     elif MODEL_NAME == "dcgan":
-        generator_filename = f"{CHECKPOINT_PREFIX}_epoch{epoch}_{timestamp}_generator.h5"
-        model["generator"].save_weights(os.path.join(CHECKPOINT_DIR, generator_filename))
+        generator_filename = (
+            f"{CHECKPOINT_PREFIX}_epoch{epoch}_{timestamp}_generator.h5"
+        )
+        model["generator"].save_weights(
+            os.path.join(CHECKPOINT_DIR, generator_filename)
+        )
 
-        discriminator_filename = f"{CHECKPOINT_PREFIX}_epoch{epoch}_{timestamp}_discriminator.h5"
-        model["discriminator"].save_weights(os.path.join(CHECKPOINT_DIR, discriminator_filename))
+        discriminator_filename = (
+            f"{CHECKPOINT_PREFIX}_epoch{epoch}_{timestamp}_discriminator.h5"
+        )
+        model["discriminator"].save_weights(
+            os.path.join(CHECKPOINT_DIR, discriminator_filename)
+        )
 
     else:
         print(f"Checkpoint saving is not implemented for '{MODEL_NAME}'")
@@ -46,7 +54,11 @@ def save_checkpoint(model, epoch=None):
     # Upload to S3
     print(f"Uploading checkpoint to S3: s3://{S3_BUCKET}/{checkpoint_filename}...")
     # rearrange names a bit
-    s3_bucket = S3_BUCKET.split('/',1)[0]
+    s3_bucket = S3_BUCKET.split("/", 1)[0]
     s3_checkpoint_filename = f"{S3_BUCKET.split('/',1)[1]}{'/'}{checkpoint_filename}"
-    s3.upload_file(os.path.join(CHECKPOINT_DIR, checkpoint_filename), s3_bucket, s3_checkpoint_filename)
+    s3.upload_file(
+        os.path.join(CHECKPOINT_DIR, checkpoint_filename),
+        s3_bucket,
+        s3_checkpoint_filename,
+    )
     print("Checkpoint uploaded successfully!")

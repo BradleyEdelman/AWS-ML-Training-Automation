@@ -1,22 +1,39 @@
 repos:
+  # - repo: local
+  #   hooks:
+  #     - id: dos2unix
+  #       name: Convert Shell Scripts to Unix Format
+  #       entry: dos2unix
+  #       language: system
+  #       types: [shellscript]
+
+  # Code Formatting
   - repo: https://github.com/psf/black
     rev: 24.2.0
     hooks:
       - id: black
+
+  - repo: https://github.com/MaxWinterstein/shfmt-py # Python version
+    rev: v3.7.0.1
+    hooks:
+      - id: shfmt
+        args: ["-w"]  # Auto-format shell scripts
+
+  # Linters
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: v0.1.14
     hooks:
       - id: ruff
+        args: ["--fix"]  # Auto-fix import sorting & lint issues
+
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.2.0
     hooks:
       - id: mypy
-  - repo: https://github.com/koalaman/shellcheck
-    rev: v0.9.0
+
+  - repo: https://github.com/shellcheck-py/shellcheck-py # Python version
+    rev: v0.10.0.1
     hooks:
-      - id: shellcheck
-  - repo: https://github.com/mvdan/sh
-    rev: v3.6.0
-    hooks:
-      - id: shfmt
-        args: ["-w"]
+    -   id: shellcheck
+        args: ["-e", "SC1017"]  # Ignore carriage return warnings - using dos2unix instead
+        args: ["-e", "SC1091"]  # Ignore venv act issue

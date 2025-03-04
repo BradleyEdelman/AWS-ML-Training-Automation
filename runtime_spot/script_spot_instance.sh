@@ -20,11 +20,11 @@ echo "Fetching Dataset..."
 # Activate virtual environment before training
 VENV_DIR="$HOME/venv"
 if [[ -d "$VENV_DIR" ]]; then
-    echo "Activating virtual environment..."
-    source "$VENV_DIR/bin/activate"
+	echo "Activating virtual environment..."
+	source "$VENV_DIR/bin/activate"
 else
-    echo "ERROR: Virtual environment not found at $VENV_DIR"
-    exit 1
+	echo "ERROR: Virtual environment not found at $VENV_DIR"
+	exit 1
 fi
 
 # Resume or Start Training

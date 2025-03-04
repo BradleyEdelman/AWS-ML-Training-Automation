@@ -1,7 +1,9 @@
 import os
-import yaml
+
 import tensorflow as tf
+import yaml  # type: ignore
 from transformers import TFGPT2LMHeadModel
+
 from ml import checkpoint_load
 
 # Load config
@@ -15,6 +17,7 @@ CHECKPOINT_DIR = config["training"]["checkpoint_dir"]
 CHECKPOINT_PREFIX = config["training"]["checkpoint_prefix"]
 RESUME_TRAINING = config["training"]["resume_from_checkpoint"]
 
+
 def model_create(model_name, num_classes=None):
     print(f"Loading base model: {model_name}")
 
@@ -27,7 +30,7 @@ def model_create(model_name, num_classes=None):
                 include_top=True,
                 weights=None,
                 input_shape=(224, 224, 3),
-                classes=num_classes
+                classes=num_classes,
             )
 
     elif model_name == "inceptionv3":
@@ -39,7 +42,7 @@ def model_create(model_name, num_classes=None):
                 include_top=True,
                 weights=None,
                 input_shape=(224, 224, 3),
-                classes=num_classes
+                classes=num_classes,
             )
 
     elif model_name == "unet":
@@ -56,6 +59,7 @@ def model_create(model_name, num_classes=None):
 
     return model
 
+
 def model_fine_tune(model, model_name):
 
     if model_name in ["resnet50", "inceptionv3"]:
@@ -66,9 +70,13 @@ def model_fine_tune(model, model_name):
         NUM_LAYERS_TO_UNFREEZE = config_cnn["num_layers_to_unfreeze"]
 
         for layer in model.layers[-NUM_LAYERS_TO_UNFREEZE:]:
-            if not isinstance(layer, tf.keras.layers.BatchNormalization):  # Keep batch norm frozen
+            if not isinstance(
+                layer, tf.keras.layers.BatchNormalization
+            ):  # Keep batch norm frozen
                 layer.trainable = True
-        print(f"Fine-tuning enabled. Unfroze the top {NUM_LAYERS_TO_UNFREEZE} layers of {model_name}.")
+        print(
+            f"Fine-tuning enabled. Unfroze the top {NUM_LAYERS_TO_UNFREEZE} layers of {model_name}."
+        )
 
     elif model_name == "gpt2":
 
@@ -77,12 +85,17 @@ def model_fine_tune(model, model_name):
 
         NUM_LAYERS_TO_UNFREEZE = config_llm["num_layers_to_unfreeze"]
 
-        for layer in model.transformer.h[:-NUM_LAYERS_TO_UNFREEZE]:  # Freeze earlier transformer blocks
-            for param in layer.parameters():  
+        for layer in model.transformer.h[
+            :-NUM_LAYERS_TO_UNFREEZE
+        ]:  # Freeze earlier transformer blocks
+            for param in layer.parameters():
                 param.requires_grad = False
-        print(f"Fine-tuning enabled. Unfroze the last {NUM_LAYERS_TO_UNFREEZE} transformer blocks of GPT-2.")
+        print(
+            f"Fine-tuning enabled. Unfroze the last {NUM_LAYERS_TO_UNFREEZE} transformer blocks of GPT-2."
+        )
 
     return model
+
 
 def model_compile(model, model_name):
 
@@ -96,7 +109,9 @@ def model_compile(model, model_name):
         LOSS_FUNCTION = config_cnn["loss_function"]
         METRICS = config_cnn["metrics"]
 
-        optimizer = tf.keras.optimizers.get({"class_name": OPTIMIZER, "config": {"learning_rate": LEARNING_RATE}})
+        optimizer = tf.keras.optimizers.get(
+            {"class_name": OPTIMIZER, "config": {"learning_rate": LEARNING_RATE}}
+        )
         model.compile(
             optimizer=optimizer,
             loss=LOSS_FUNCTION,
@@ -105,31 +120,29 @@ def model_compile(model, model_name):
         print(f"{model_name} compiled.")
 
     elif model_name == "dcgan":
-        optimizer = tf.keras.optimizers.get({"class_name": OPTIMIZER, "config": {"learning_rate": LEARNING_RATE}})
-        model["generator"].compile(
-            optimizer=optimizer,
-            loss=LOSS_FUNCTION
+        optimizer = tf.keras.optimizers.get(
+            {"class_name": OPTIMIZER, "config": {"learning_rate": LEARNING_RATE}}
         )
-        model["discriminator"].compile(
-            optimizer=optimizer,
-            loss=LOSS_FUNCTION
-        )
+        model["generator"].compile(optimizer=optimizer, loss=LOSS_FUNCTION)
+        model["discriminator"].compile(optimizer=optimizer, loss=LOSS_FUNCTION)
         print(f"{model_name} compiled with binary crossentropy loss.")
 
     else:
         print(f"{model_name} does not require compilation.")
-    
+
     return model
 
 
 def main():
 
     # Create a fresh model
-    num_classes = len([d for d in os.listdir(DATA_PATH) if os.path.isdir(os.path.join(DATA_PATH, d))])
+    num_classes = len(
+        [d for d in os.listdir(DATA_PATH) if os.path.isdir(os.path.join(DATA_PATH, d))]
+    )
     if num_classes is None or num_classes == 0:
-        print(f"Could not determine number of classes!")
+        print("Could not determine number of classes!")
         return None
-    
+
     model = model_create(MODEL_NAME, num_classes=num_classes)
 
     # Specify fine-tuning parameters (unfreezing layers)
@@ -147,6 +160,7 @@ def main():
     # model.summary()
 
     return model
+
 
 if __name__ == "__main__":
     model = main()

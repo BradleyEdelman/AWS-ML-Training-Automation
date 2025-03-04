@@ -6,6 +6,8 @@ black
 black[jupyter]
 ruff
 mypy
+shellcheck-py
+shfmt-py
 
 # Pre-commit hooks
 pre-commit

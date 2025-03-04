@@ -1,21 +1,20 @@
 #!/bin/bash
 
 # Configuration variables
-AWS_REGION="eu-central-1"
 IAM_ROLE_NAME="EC2-Training-Role"
 IAM_INSTANCE_PROFILE="EC2-Training-Instance-Profile"
 
 # Select IAM policy type
 echo "Choose IAM policy level: (1) Restricted (2) Full Access"
-read -p "Enter 1 or 2: " POLICY_CHOICE
+read -p -r "Enter 1 or 2: " POLICY_CHOICE
 
 if [[ "$POLICY_CHOICE" == "1" ]]; then
-    PERMISSIONS_POLICY="iam_policies/iam_permissions_restricted.json"
+	PERMISSIONS_POLICY="iam_policies/iam_permissions_restricted.json"
 elif [[ "$POLICY_CHOICE" == "2" ]]; then
-    PERMISSIONS_POLICY="iam_policies/iam_permissions_full.json"
+	PERMISSIONS_POLICY="iam_policies/iam_permissions_full.json"
 else
-    echo "Invalid choice. Exiting."
-    exit 1
+	echo "Invalid choice. Exiting."
+	exit 1
 fi
 
 TRUST_POLICY="iam_policies/iam_trust_policy.json"

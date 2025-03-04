@@ -1,6 +1,12 @@
 name: CI Pipeline
 
-on: {}
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   lint-and-test:
@@ -19,14 +25,13 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-          pip install -r requirements-dev.txt
+          pip install -r requirements/requirements-dev.txt
+          pip install pre-commit
 
-      - name: Run Linters & Formatters
+      - name: Run Pre-commit Hooks # Rather than individual linting tools
         run: |
           source venv/bin/activate
-          black --check .
-          ruff check .
-          mypy .
+          pre-commit run --all-files
 
       - name: Run Tests
         run: |
