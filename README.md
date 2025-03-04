@@ -1,4 +1,5 @@
 # AWS ML Training Automation
+**v0.1.0 - 2025.03.04**
 
 This repository provides an automated workflow for setting up and running **deep learning training on AWS EC2** with minimal manual effort. The goal is to allow users to easily launch, configure, track, and manage EC2 instances during long ML training sessions while trying to minimize overall training cost.
 
@@ -34,6 +35,8 @@ aws-ml-training-automation/
 │   ├── 03_aws_S3_upload_data.md
 │   ├── 04_config_yaml_guide.md
 │   ├── 05_workflow_overview.md
+│   ├── 06_vCPU_limit_guide.md
+│   ├── 99_aws_iam_setup_dashboard.md
 │
 │── example_files/
 │   ├── iam_permissions_full.json                 # Full IAM role permissions (e.g. root user)
@@ -81,7 +84,6 @@ aws-ml-training-automation/
 │── config_cnn.yaml
 │── config_llm.yaml
 │── LICENSE
-│── mypy.ini
 │── pyproject.toml
 │── README.md
 ```
