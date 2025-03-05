@@ -1,0 +1,26 @@
+text_keys: # Required, for identifying relevant text (the meat of the training data)
+  - "text"
+  - "content"
+  - "transcript"
+  - "message"
+  - "post"
+  - "lyrics"
+  - "interview"
+  - "article"
+  - "review"
+  - "comment"
+  - "poem"
+  # can add more text keys as needed
+
+metadata_keys:  # Optional, for adding more context to the training data
+  - "author"
+  - "category"
+  - "source"
+  - "date"
+  - "title"
+  - "album"
+  - "genre"
+  - "artist"
+  # can add more metadata keys as needed
+
+min_text_words: 5  # Minimum word count per text key entry

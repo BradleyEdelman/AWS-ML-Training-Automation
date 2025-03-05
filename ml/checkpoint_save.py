@@ -24,11 +24,17 @@ s3 = boto3.client("s3")
 def checkpoint_save(model, epoch=None):
     timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
-    if MODEL_NAME in ["resnet50", "inceptionv3", "unet"]:
+    if MODEL_NAME in ["resnet50", "resnet101", "mobilenet_v2", "inceptionv3", "unet"]:
         checkpoint_filename = f"{CHECKPOINT_PREFIX}_epoch{epoch}_{timestamp}.h5"
         model.save_weights(os.path.join(CHECKPOINT_DIR, checkpoint_filename))
 
-    elif MODEL_NAME == "gpt2":
+    elif MODEL_NAME in [
+        "gpt2",
+        "EleutherAI/gpt-j-6B",
+        "mistralai/Mistral-7B",
+        "meta-llama/Llama-2-7b-hf",
+        "meta-llama/Llama-2-13b-hf",
+    ]:
         checkpoint_filename = f"{CHECKPOINT_PREFIX}_epoch{epoch}_{timestamp}"
         model.save_pretrained(os.path.join(CHECKPOINT_DIR, checkpoint_filename))
 

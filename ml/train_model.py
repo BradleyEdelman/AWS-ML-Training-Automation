@@ -33,10 +33,10 @@ def main():
     subprocess.Popen(["bash", "runtime_spot/monitoring/detect_spot_termination.sh"])
 
     # Load model and compile model (if applicable)
-    model = model_configure.main()
+    model, tokenizer = model_configure.main()
 
     # Run training loop with custom checkpointing
-    if MODEL_NAME in ["resnet50", "inceptionv3"]:
+    if MODEL_NAME in ["resnet50", "resnet101", "inceptionv3", "mobilenetv2"]:
         training_loops.train_cnn(model, dataset)
     elif MODEL_NAME == "gpt2":
         training_loops.train_gpt2(model, dataset)

@@ -1,7 +1,7 @@
 import os
 
 import yaml  # type: ignore
-from transformers import TFGPT2LMHeadModel
+from transformers import AutoModelForCausalLM
 
 # Load config
 with open("config.yaml", "r") as f:
@@ -28,13 +28,19 @@ def checkpoint_load(model):
     print(f"Found latest checkpoint: {latest_checkpoint_path}")
 
     # Load weights based on model type
-    if MODEL_NAME in ["resnet50", "inceptionv3", "unet"]:
-        print(f"Loading CNN checkpoint: {latest_checkpoint_path}")
+    if MODEL_NAME in ["resnet50", "resnet101", "mobilenet_v2", "inceptionv3", "unet"]:
+        print(f"Loading {MODEL_NAME} checkpoint: {latest_checkpoint_path}")
         model.load_weights(latest_checkpoint_path)
 
-    elif MODEL_NAME == "gpt2":
-        print(f"Loading GPT-2 checkpoint from {latest_checkpoint_path}")
-        model = TFGPT2LMHeadModel.from_pretrained(latest_checkpoint_path)
+    elif MODEL_NAME in [
+        "gpt2",
+        "EleutherAI/gpt-j-6B",
+        "mistralai/Mistral-7B",
+        "meta-llama/Llama-2-7b-hf",
+        "meta-llama/Llama-2-13b-hf",
+    ]:
+        print(f"Loading {MODEL_NAME} checkpoint from {latest_checkpoint_path}")
+        model = AutoModelForCausalLM.from_pretrained(latest_checkpoint_path)
 
     elif MODEL_NAME == "dcgan":
         generator_path = latest_checkpoint_path.replace("_generator.h5", "_generator")
