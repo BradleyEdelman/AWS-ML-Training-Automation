@@ -3,7 +3,10 @@ aws:
   iam_role_arn: "arn:aws:iam::084375547262:role/EC2-Training-Role"
   iam_instance_profile: "EC2-Training-Role"
   region: "eu-central-1"
-  s3_bucket: "grateful-dead-chatbot/class_test"
+  project_name: "grateful-dead-chatbot"
+  s3_bucket_checkpoints: "grateful-dead-chatbot/checkpoints"
+  s3_bucket_logs: "grateful-dead-chatbot/logs"
+  s3_bucket_data: "grateful-dead-chatbot/class_test"
   session_name: "EC2-Training-Session"
 
 ec2:
@@ -15,7 +18,7 @@ ec2:
 
 training:
   dataset_path: "data/"
-  model: "resnet50" # "resnet50", "inceptionv3", "gpt2", "dcgan"
+  model: "resnet50" # "resnet50", "resnet101", "inceptionv3", "gpt2", "dcgan"
   fine_tune: true
   epochs: 2 
   checkpoint_interval: 1

@@ -138,6 +138,14 @@ use_fp16: true                 # Mixed-precision training for efficiency
 | LLaMA 2 7B    | `"meta-llama/Llama-2-7b-hf"` |
 | LLaMA 2 13B   | `"meta-llama/Llama-2-13b-hf"` |
 
+### **Recommended Training Parameters**
+| **Common Name** | **Batch Size** | **Gradient Accumulation**|
+|---------------|------------------|--------------------------|
+| GPT-2         | 4 | 1 |
+| GPT-J 6B      | 2 | 1 |
+| Mistral 7B    | 1 | 8 |
+| LLaMA 2 7B    | 1 | 8 |
+| LLaMA 2 13B   | 1 | 8 |
 
 ### **Recommended GPU Instances**
 | **Common Name** | **Recommended AWS Instance** |

@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM
 with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
-S3_BUCKET = config["aws"]["s3_bucket"]
+# S3_BUCKET_CHECKPOINT = config["aws"]["s3_bucket_checkpoint"]
 CHECKPOINT_DIR = config["training"]["checkpoint_dir"]
 CHECKPOINT_PREFIX = config["training"]["checkpoint_prefix"]
 MODEL_NAME = config["training"]["model"]

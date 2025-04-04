@@ -6,3 +6,4 @@ pandas
 pillow
 tf-keras
 types-PyYAML
+watchtower

@@ -3,7 +3,14 @@ import subprocess
 
 import yaml  # type: ignore
 
-from ml import data_check, data_prepare, model_configure, training_loops
+from ml import (
+    cloudwatch_logger,
+    data_check,
+    data_prepare,
+    model_configure,
+    parameter_check,
+    training_loops,
+)
 
 # Load config
 with open("config.yaml", "r") as f:
@@ -12,8 +19,16 @@ with open("config.yaml", "r") as f:
 CHECKPOINT_DIR = config["training"]["checkpoint_dir"]
 MODEL_NAME = config["training"]["model"]
 
+# initialize CloudWatch logger
+logger = cloudwatch_logger.setup_logger()
+cloudwatch_logger.redirect_stdout_to_logger(logger)
+
 
 def main():
+
+    # Check model input parameters
+    print("Checking model input parameters...")
+    parameter_check.main()
 
     # Check dataset format
     print("Checking dataset formatting...")
@@ -39,7 +54,7 @@ def main():
     if MODEL_NAME in ["resnet50", "resnet101", "inceptionv3", "mobilenetv2"]:
         training_loops.train_cnn(model, dataset)
     elif MODEL_NAME == "gpt2":
-        training_loops.train_gpt2(model, dataset)
+        training_loops.train_llm(model, tokenizer, dataset)
     elif MODEL_NAME == "dcgan":
         training_loops.train_dcgan(model, dataset)
     else:
