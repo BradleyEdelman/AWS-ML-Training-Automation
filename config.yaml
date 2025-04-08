@@ -1,6 +1,6 @@
 aws:
   cli_profile: "ec2-training"
-  iam_role_arn: "arn:aws:iam::084375547262:role/EC2-Training-Role"
+  iam_role_arn: "arn:aws:iam::account_id:role/EC2-Training-Role"
   iam_instance_profile: "EC2-Training-Role"
   region: "eu-central-1"
   project_name: "grateful-dead-chatbot"
